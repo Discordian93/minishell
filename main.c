@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:35:17 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/06 14:02:44 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/06 14:31:36 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_cmd *parseexec(char *input)
             i++;
             if (!token[i])
                 panic("Falta archivo después de redirección");
-            if (strcmp(token[i - 1], ">") == 0) 
+            if (ft_strncmp(token[i - 1], ">",ft_strlen(token[i - 1])) == 0) 
             {
                 mode = O_WRONLY | O_CREAT | O_TRUNC;
                 fd = 1;
@@ -110,7 +110,8 @@ t_cmd   *parsepipe(char *input)
     right = parsepipe(right_part);
     //crear nodo PIPE
     pipe = malloc(sizeof(t_pipe));
-    //aqui va un mensaje de error
+    if (!pipe)
+        panic("Error\n");
     pipe -> type = PIPE;
     pipe -> left = left;
     pipe -> right = right;
