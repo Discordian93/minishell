@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:35:17 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/06 13:22:13 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/06 14:02:44 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ t_cmd *parseexec(char *input)
     j = 0;
     while (token[i] != NULL) 
     {
-        if (strcmp(token[i], ">") == 0 || strcmp(token[i], "<") == 0) 
+        if (ft_strncmp(token[i], ">", ft_strlen(token[i])) == 0 || ft_strncmp(token[i], "<", ft_strlen(token[i])) == 0) 
         {
             i++;
             if (!token[i])
