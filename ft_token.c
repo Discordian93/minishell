@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_token.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 11:27:09 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/06 18:16:21 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:36:48 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,8 @@ char **ft_token(char *str)
     return (s);
 }
 
+
+/*
 #include <stdio.h>
 
 
@@ -156,3 +158,4 @@ int main(void)
 
     return (0);
 }
+*/

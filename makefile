@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+         #
+#    By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 23:01:13 by yuliano           #+#    #+#              #
-#    Updated: 2025/07/06 12:21:48 by ypacileo         ###   ########.fr        #
+#    Updated: 2025/07/09 22:36:14 by yuliano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 NAME = minishell
 
 # Archivos objeto
-OBJS = ft_token.o main.o
+OBJS = ft_token.o main_v3.o
 
 # Flags de compilación: incluye depuración (-g)
 CFLAGS = -Wall -Wextra -Werror -g -I./

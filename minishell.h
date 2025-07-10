@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/06 13:44:05 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/10 23:34:10 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,16 @@ typedef struct s_cmd
   int type;  // Tipo del comando (EXEC, PIPE, REDIR)
 }	t_cmd;
 
+
+
 // Nodo EXEC: Representa un comando simple (ej: ls -l)
 typedef struct s_exec
 {
   int type;
   char *argv[MAXARGS];
 }	t_exec;
+
+
 
 // Nodo REDIR: Representa una redirección (< o >)
 typedef struct s_redir 
@@ -51,6 +55,8 @@ typedef struct s_redir
   int mode;             // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
   int fd;               // File descriptor a redirigir (0 = stdin, 1 = stdout)
 }	t_redir;
+
+
 
 // Nodo PIPE: Representa un pipe entre dos comandos (ej: ls | grep)
 typedef struct s_pipe
