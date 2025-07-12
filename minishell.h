@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/10 23:34:10 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/12 22:53:39 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,47 +24,38 @@
 #include <sys/stat.h>
 # include "libft/libft.h"
 
-#define EXEC  1   // Comando ejecutable simple
-#define REDIR 2   // Comando con redirección (< o >)
-#define PIPE  3   // Comando con pipe (|)
 # define MAXARGS 15
 
-// Estructura base de un comando
-typedef struct s_cmd 
+// Estructura genérica de nodo del árbol
+typedef struct s_tree_node
 {
-  int type;  // Tipo del comando (EXEC, PIPE, REDIR)
-}	t_cmd;
+    char *etiqueta;                  // Etiqueta que identifica el tipo: "EXEC", "REDIR", "PIPE"
+    void *objeto;                    // Puntero genérico al objeto (exec, redir, pipe, etc.)
+    struct s_tree_node *left;       // Nodo hijo izquierdo
+    struct s_tree_node *right;      // Nodo hijo derecho
+} t_tree_node;
 
-
-
-// Nodo EXEC: Representa un comando simple (ej: ls -l)
+// Estructuras específicas SIN campo type (ya no heredan de t_cmd)
 typedef struct s_exec
 {
-  int type;
-  char *argv[MAXARGS];
-}	t_exec;
+    char *argv[MAXARGS];
+} t_exec;
 
-
-
-// Nodo REDIR: Representa una redirección (< o >)
 typedef struct s_redir 
 {
-  int type;
-  t_cmd *cmd;      // Subcomando sobre el que se aplica la redirección
-  char *file;           // Nombre del archivo destino o fuente
-  int mode;             // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
-  int fd;               // File descriptor a redirigir (0 = stdin, 1 = stdout)
-}	t_redir;
+    char *file;                      // Nombre del archivo destino o fuente
+    int mode;                        // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
+    int fd;                          // File descriptor a redirigir (0 = stdin, 1 = stdout)
+} t_redir;
 
 
 
-// Nodo PIPE: Representa un pipe entre dos comandos (ej: ls | grep)
-typedef struct s_pipe
-{
-  int type;
-  t_cmd *left;     // Lado izquierdo del pipe
-  t_cmd *right;    // Lado derecho del pipe
-}	t_pipe;
+// Funciones para manejo del árbol
+t_tree_node *init_tree(void);
+t_tree_node *create_tree_node(void *objeto, char *etiqueta);
+void free_tree(t_tree_node *root);
+void print_tree(t_tree_node *root, int depth);
+int is_node_type(t_tree_node *node, char *tipo);
 
-char **ft_token(char *str);
+char **ft_token(const char *str);
 #endif
