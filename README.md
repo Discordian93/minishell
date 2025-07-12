@@ -1,4 +1,4 @@
-#Resumen de Bash para los requisitos de Minishell
+Resumen de Bash para los requisitos de Minishell·
 
 1. Mostrar una entrada (prompt) y tener un historial funcional:
     ◦ Prompt: Bash utiliza las variables PS1 y PS2 para definir las cadenas del prompt
@@ -57,11 +57,12 @@
     ◦ Bash realiza expansión de parámetros y variables
 	. Una variable es una entidad que almacena valores y puede ser un nombre, un número o uno de los caracteres especiales. Bash escanea su propio entorno al inicio y crea un parámetro para cada nombre encontrado, marcándolo automáticamente para exportar a los procesos hijos
 .
-8. Gestionar $? (estado de salida):
+8. Gestionar \$? (estado de salida):
+   
     ◦ El parámetro especial $? se expande al estado de salida de la tubería en primer plano ejecutada más recientemente
 	. El estado de salida de un comando ejecutado es un valor entre 0 y 255. Por convención, cero indica éxito, y un valor distinto de cero indica fallo. Si un comando finaliza con una señal fatal cuyo número es N, Bash usa el valor 128+N como estado de salida
 .
-9. Implementar los built-ins:
+10. Implementar los built-ins:
 
     ◦ echo -n: El comando echo imprime sus argumentos en la salida estándar
 	. La opción -n suprime la nueva línea final
@@ -82,7 +83,7 @@
     ◦ exit: Causa que el shell finalice
 	. Puede tomar un argumento entero como estado de salida. Minishell especifica sin opciones
 .
-10. Parte extra (&&, || con paréntesis para prioridades):
+11. Parte extra (&&, || con paréntesis para prioridades):
 
     ◦ Listas de comandos (&&, ||): En Bash, && (lista AND) y || (lista OR) son operadores de control que tienen la misma precedencia
 	. instrucción1 && instrucción2 significa que instrucción2 se ejecuta si y solo si instrucción1 tiene un estado de salida de cero (éxito). instrucción1 || instrucción2 significa que instrucción2 se ejecuta si y solo si instrucción1 tiene un estado de salida distinto de cero (fallo)
