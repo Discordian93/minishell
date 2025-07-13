@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/13 13:52:34 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/13 13:54:48 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ char **ft_token(const char *str)
     return (s);
 }
 
-
+/*
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -151,7 +151,7 @@ void print_tokens(char **tokens)
 }
 
 
-/*
+
 int main(void)
 {
     char *tests[] = {

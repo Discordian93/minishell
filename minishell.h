@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/13 12:31:51 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:53:00 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,7 @@ void    ft_redir(t_redir **redir,char *file, int mode, int fd);
 t_tree_node *parseexec_tree(char *input);
 char **ft_token(const char *str);
 t_tree_node *parsepipe_tree(char *input);
+void panic(char *msg);
+char	*ft_strjoin_free(char *s1, const char *s2);
+void free_split(char ***s, int index);
 #endif

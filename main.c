@@ -40,55 +40,77 @@ int is_node_type(t_tree_node *node, char *tipo)
 }
 
 
-// Versión mejorada de runcmd_tree para manejar múltiples redirecciones
+
 void runcmd_tree(t_tree_node *tree)
 {
+    pid_t pid;
+    int status;
+    
+
     if (!tree)
         return;
-    
+
     if (is_node_type(tree, "EXEC"))
     {
         t_exec *exec = (t_exec *)tree->objeto;
         printf("[EXEC] Ejecutando: %s\n", exec->argv[0]);
-        // Aquí iría la lógica de execvp, fork, etc.
-        
-        // Ejemplo de ejecución real:
-        // if (fork() == 0)
-        // {
-        //     execvp(exec->argv[0], exec->argv);
-        //     panic("execvp failed");
-        // }
-        // wait(NULL);
+
+        pid = fork();
+        if (pid == -1)
+            panic("fork failed");
+
+        if (pid == 0)
+        {
+            // Proceso hijo ejecuta el comando
+            /*int i = 0;
+            while (exec->argv[i])
+            {
+                printf("argv[%d] = %s\n", i, exec->argv[i]);
+                i++;
+            }*/
+            execvp(exec->argv[0], exec->argv);
+            panic("execvp failed");
+        }
+        else
+        {
+            // Proceso padre espera al hijo
+            waitpid(pid, &status, 0);
+        }
     }
     else if (is_node_type(tree, "REDIR"))
     {
         t_redir *redir = (t_redir *)tree->objeto;
-        printf("[REDIR] Redirigiendo fd %d a: %s (mode: %d)\n", 
+        printf("[REDIR] Redirigiendo fd %d a: %s (mode: %d)\n",
                redir->fd, redir->file, redir->mode);
+
+        /*guardamos una copia*/
+        int saved_fd = dup(redir->fd);
+        if (saved_fd < 0)
+            panic("dup failed");
+
+        int fd = open(redir->file, redir->mode, 0644);
+        if (fd < 0)
+            panic("open failed");
         
-        // Aquí iría la lógica de redirección real:
-        // int fd = open(redir->file, redir->mode, 0644);
-        // if (fd < 0)
-        //     panic("open failed");
-        // dup2(fd, redir->fd);
-        // close(fd);
-        
-        // Ejecutar el comando hijo (que puede ser otra redirección o EXEC)
-        runcmd_tree(tree->left);
-    }
-    else if (is_node_type(tree, "PIPE"))
-    {
-        printf("[PIPE] Creando pipe\n");
-        // Aquí iría la lógica de pipe, fork, etc.
-        runcmd_tree(tree->left);  // Ejecutar lado izquierdo
-        runcmd_tree(tree->right); // Ejecutar lado derecho
+        /*ahora STDOUT_FILENO comperte el mismo recurso que fd*/
+        if (dup2(fd, redir->fd) < 0)
+            panic("dup2 failed");
+        close(fd);
+
+        runcmd_tree(tree->left);  // Ejecutar el nodo hijo
+
+        /*ahora STDOUT_FILENO vuelve a conectarse con la terminal*/
+        dup2(saved_fd, redir->fd); 
+        close(saved_fd);
     }
 }
+
 // Ejemplo de uso en main
 int main(void)
 {
     char *input;
     t_tree_node *tree;
+
 
     while (1)
     {
@@ -113,11 +135,7 @@ int main(void)
         }
         else
         {
-           
-            // Ejecutar comandos
-            //runcmd_tree(tree);
-            
-            // Liberar el árbol
+            runcmd_tree(tree);
             //free_tree(tree);
         }
 
