@@ -1,115 +1,70 @@
-/* minishell.h - Main header file */
-#ifndef MINISHELL_H
-# define MINISHELL_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
+/*   Updated: 2025/07/10 23:34:10 by yuliano          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <unistd.h>
-# include <stdbool.h>
-# include <ctype.h>
+#ifndef MINI_SHELL
+#define MINI_SHELL
 
-/* Token types for lexical analysis */
-typedef enum e_token_type
+#include <stdio.h>
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+# include "libft/libft.h"
+
+#define EXEC  1   // Comando ejecutable simple
+#define REDIR 2   // Comando con redirección (< o >)
+#define PIPE  3   // Comando con pipe (|)
+# define MAXARGS 15
+
+// Estructura base de un comando
+typedef struct s_cmd 
 {
-    TOKEN_WORD,           // Command or argument
-    TOKEN_PIPE,           // |
-    TOKEN_REDIRECT_IN,    // <
-    TOKEN_REDIRECT_OUT,   // >
-    TOKEN_HEREDOC,        // <<
-    TOKEN_APPEND,         // >>
-    TOKEN_AND,            // &&
-    TOKEN_OR,             // ||
-    TOKEN_LPAREN,         // (
-    TOKEN_RPAREN,         // )
-    TOKEN_EOF,            // End of input
-    TOKEN_ERROR           // Lexical error
-}   t_token_type;
+  int type;  // Tipo del comando (EXEC, PIPE, REDIR)
+}	t_cmd;
 
-/* Token structure */
-typedef struct s_token
+
+
+// Nodo EXEC: Representa un comando simple (ej: ls -l)
+typedef struct s_exec
 {
-    t_token_type        type;
-    char                *value;
-    struct s_token      *next;
-}   t_token;
+  int type;
+  char *argv[MAXARGS];
+}	t_exec;
 
-/* AST node types */
-typedef enum e_ast_type
+
+
+// Nodo REDIR: Representa una redirección (< o >)
+typedef struct s_redir 
 {
-    AST_COMMAND,          // Simple command
-    AST_PIPE,             // Pipeline
-    AST_AND,              // && operator
-    AST_OR,               // || operator
-    AST_REDIRECT          // Redirection
-}   t_ast_type;
+  int type;
+  t_cmd *cmd;      // Subcomando sobre el que se aplica la redirección
+  char *file;           // Nombre del archivo destino o fuente
+  int mode;             // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
+  int fd;               // File descriptor a redirigir (0 = stdin, 1 = stdout)
+}	t_redir;
 
-/* Redirection types */
-typedef enum e_redir_type
+
+
+// Nodo PIPE: Representa un pipe entre dos comandos (ej: ls | grep)
+typedef struct s_pipe
 {
-    REDIR_IN,             // <
-    REDIR_OUT,            // >
-    REDIR_HEREDOC,        // <<
-    REDIR_APPEND          // >>
-}   t_redir_type;
+  int type;
+  t_cmd *left;     // Lado izquierdo del pipe
+  t_cmd *right;    // Lado derecho del pipe
+}	t_pipe;
 
-/* Redirection structure */
-typedef struct s_redirect
-{
-    t_redir_type        type;
-    char                *file;
-    struct s_redirect   *next;
-}   t_redirect;
-
-/* AST node structure */
-typedef struct s_ast_node
-{
-    t_ast_type          type;
-    union
-    {
-        struct {
-            char        **argv;     // Command arguments
-            t_redirect  *redirects; // Redirections
-        } command;
-        struct {
-            struct s_ast_node *left;
-            struct s_ast_node *right;
-        } binary;
-    } data;
-}   t_ast_node;
-
-/* Lexer state structure */
-typedef struct s_lexer
-{
-    const char  *input;
-    size_t      pos;
-    size_t      len;
-}   t_lexer;
-
-/* Parser state structure */
-typedef struct s_parser
-{
-    t_token     *current;
-    t_token     *tokens;
-    bool        error;
-    char        *error_msg;
-}   t_parser;
-
-/* Lexer functions */
-t_lexer     *lexer_init(const char *input);
-t_token     *lexer_tokenize(t_lexer *lexer);
-void        lexer_destroy(t_lexer *lexer);
-void        token_list_destroy(t_token *tokens);
-
-/* Parser functions */
-t_parser    *parser_init(t_token *tokens);
-t_ast_node  *parser_parse(t_parser *parser);
-void        parser_destroy(t_parser *parser);
-void        ast_destroy(t_ast_node *node);
-
-/* Utility functions */
-char        *ft_strdup(const char *s);
-char        *ft_strndup(const char *s, size_t n);
-void        *ft_calloc(size_t count, size_t size);
-
-#endif /* MINISHELL_H */
+char **ft_token(char *str);
+#endif
