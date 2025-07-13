@@ -19,8 +19,9 @@ int count_words(const char *s)
 {
     int words = 0;
     int i = 0;
-    int quote_single = 0;
-    int quote_double = 0;
+    char    start_quote;
+    //int quote_single = 0;
+    //int quote_double = 0;
 
     while (s[i] != '\0')
     {
@@ -31,31 +32,14 @@ int count_words(const char *s)
         if (s[i] != '\0')
         {
             words++;
-            if (s[i] == '\'')
+            if (s[i] == '\'' || s[i] == '\"')
             {   
-                quote_single++;
-                i++;
-                while (s[i] != '\'' && s[i] != '\0')
+                start_quote = s[i++];
+                while (s[i] != start_quote && s[i] != '\0')
                     i++;
                 if (s[i] == '\0')
-                    return (-1); // comilla simple no cerrada
-                else
-                    quote_single++;
-                i++;
-                
-            }
-            else if (s[i] == '"')
-            {
-                quote_double++;
-                i++;
-                while (s[i] != '"' && s[i] != '\0')
-                    i++;
-                if (s[i] == '\0')
-                    return (-1); // comilla doble no cerrada
-                else
-                    quote_double++;
-                i++;
-                
+                    return(-1);
+                i++
             }
             else
             {
@@ -65,8 +49,8 @@ int count_words(const char *s)
         }
     }
 
-    if (quote_single % 2 != 0 || quote_double % 2 != 0)
-        return (-1);
+/*     if (quote_single % 2 != 0 || quote_double % 2 != 0)
+        return (-1); */
 
     return (words);
 }
