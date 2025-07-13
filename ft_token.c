@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_token.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/13 00:24:59 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/13 13:52:34 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ int count_words(const char *s)
     int words = 0;
     int i = 0;
     char    start_quote;
-    //int quote_single = 0;
-    //int quote_double = 0;
 
     while (s[i] != '\0')
     {
@@ -39,7 +37,7 @@ int count_words(const char *s)
                     i++;
                 if (s[i] == '\0')
                     return(-1);
-                i++
+                i++;
             }
             else
             {
@@ -48,9 +46,6 @@ int count_words(const char *s)
             }
         }
     }
-
-/*     if (quote_single % 2 != 0 || quote_double % 2 != 0)
-        return (-1); */
 
     return (words);
 }

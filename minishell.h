@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/12 22:53:39 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/13 12:31:51 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,11 @@ typedef struct s_redir
 t_tree_node *init_tree(void);
 t_tree_node *create_tree_node(void *objeto, char *etiqueta);
 void free_tree(t_tree_node *root);
-void print_tree(t_tree_node *root, int depth);
 int is_node_type(t_tree_node *node, char *tipo);
-
+int is_redirection(char *token);
+void get_redir_info(char *token, int *mode, int *fd);
+void    ft_redir(t_redir **redir,char *file, int mode, int fd);
+t_tree_node *parseexec_tree(char *input);
 char **ft_token(const char *str);
+t_tree_node *parsepipe_tree(char *input);
 #endif
