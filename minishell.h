@@ -26,6 +26,14 @@
 
 # define MAXARGS 15
 
+typedef enum e_redir_type
+{
+    FILE_TRUNC,
+    FILE_APPEND,
+    FILE_IN,
+    HEREDOC
+} t_redir_type;
+
 // Estructura genérica de nodo del árbol
 typedef struct s_tree_node
 {
@@ -43,6 +51,7 @@ typedef struct s_exec
 
 typedef struct s_redir 
 {
+    t_redir_type   type;
     char *file;                      // Nombre del archivo destino o fuente
     int mode;                        // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
     int fd;                          // File descriptor a redirigir (0 = stdin, 1 = stdout)
