@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/13 16:56:59 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/17 22:58:43 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ t_tree_node *parseexec_tree(char *input)
     exec = malloc(sizeof(t_exec));
     if (!exec)
         panic("malloc failed");
-    
+    j = 0;
     while(j < MAXARGS)
     {
         exec->argv[j] = NULL;

@@ -39,71 +39,101 @@ int is_node_type(t_tree_node *node, char *tipo)
     return (ft_strncmp(node->etiqueta, tipo, ft_strlen(tipo)) == 0);
 }
 
+#include "minishell.h"
 
-
+/**
+ * Ejecuta un árbol de comandos de forma recursiva
+ * Maneja diferentes tipos de nodos: EXEC (ejecución) y REDIR (redirección)
+ * @param tree: nodo del árbol a ejecutar
+ */
 void runcmd_tree(t_tree_node *tree)
 {
     pid_t pid;
     int status;
     
-
     if (!tree)
         return;
-
+    
     if (is_node_type(tree, "EXEC"))
     {
         t_exec *exec = (t_exec *)tree->objeto;
-        printf("[EXEC] Ejecutando: %s\n", exec->argv[0]);
-
+        //printf("[EXEC] Ejecutando: %s\n", exec->argv[0]);
+        
+        // Creamos un nuevo proceso hijo
         pid = fork();
         if (pid == -1)
             panic("fork failed");
-
-        if (pid == 0)
+        
+        if (pid == 0) // Proceso hijo
         {
-            // Proceso hijo ejecuta el comando
-            /*int i = 0;
-            while (exec->argv[i])
-            {
-                printf("argv[%d] = %s\n", i, exec->argv[i]);
-                i++;
-            }*/
-            execvp(exec->argv[0], exec->argv);
-            panic("execvp failed");
+            // Obtenemos el path absoluto del binario
+            char *path = get_command_path(exec->argv[0]);
+            if (!path)
+                panic("command not found");
+            
+            // Usamos execve, que reemplaza el proceso actual por el binario especificado
+            // execve(path_binario, argumentos, variables_de_entorno)
+            execve(path, exec->argv, NULL);
+            
+            // ✅ Liberar memoria antes de panic (solo se ejecuta si execve falla)
+            free(path);
+            panic("execve failed");
         }
-        else
+        else // Proceso padre
         {
-            // Proceso padre espera al hijo
+            // Espera a que termine el proceso hijo
             waitpid(pid, &status, 0);
         }
     }
     else if (is_node_type(tree, "REDIR"))
     {
         t_redir *redir = (t_redir *)tree->objeto;
-        printf("[REDIR] Redirigiendo fd %d a: %s (mode: %d)\n",
-               redir->fd, redir->file, redir->mode);
-
-        /*guardamos una copia*/
-        int saved_fd = dup(redir->fd);
-        if (saved_fd < 0)
-            panic("dup failed");
-
-        int fd = open(redir->file, redir->mode, 0644);
-        if (fd < 0)
-            panic("open failed");
+        /*printf("[REDIR] Redirigiendo fd %d a: %s (mode: %d)\n",
+               redir->fd, redir->file, redir->mode);*/
         
-        /*ahora STDOUT_FILENO comperte el mismo recurso que fd*/
-        if (dup2(fd, redir->fd) < 0)
+        // Guardamos el descriptor original para restaurarlo luego
+        int copy_fd = dup(redir->fd);
+        if (copy_fd < 0)
+            panic("dup failed");
+        
+        // Abrimos el archivo para redirigir
+        int fd = open(redir->file, redir->mode, 0644);
+        if (fd < 0) 
+        {
+            close(copy_fd);
+            panic("open failed");
+        }
+        
+        // Redirigimos el fd original al archivo
+        if (dup2(fd, redir->fd) < 0) 
+        {
+            close(fd);
+            close(copy_fd);
             panic("dup2 failed");
+        }
+        
+        // Cerramos el descriptor del archivo (ya está duplicado)
         close(fd);
-
-        runcmd_tree(tree->left);  // Ejecutar el nodo hijo
-
-        /*ahora STDOUT_FILENO vuelve a conectarse con la terminal*/
-        dup2(saved_fd, redir->fd); 
-        close(saved_fd);
+        
+        // Ejecutamos el subárbol redirigido
+        runcmd_tree(tree->left);
+        
+        // Restauramos el descriptor original
+        if (dup2(copy_fd, redir->fd) < 0)
+            panic("dup2 restore failed");
+        close(copy_fd);
     }
+    /*
+    else if (is_node_type(tree, "PIPE"))
+    {
+        // TODO: Implementar manejo de pipes
+        printf("[PIPE] Tipo de nodo no implementado aún\n");
+    }*/
+    
+    
 }
+
+
 
 // Ejemplo de uso en main
 int main(void)
