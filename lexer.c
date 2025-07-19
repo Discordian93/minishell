@@ -123,7 +123,6 @@ static int	handle_quoted_part(char **word, t_lexer *lexer)
 	quoted_content = read_quoted_string(lexer, quote_type);
 	if (!quoted_content)
 		return (-1);
-	
 	if (quote_type == '"')
 	{
 		expanded_content = expand_variables(quoted_content);
@@ -132,7 +131,6 @@ static int	handle_quoted_part(char **word, t_lexer *lexer)
 			return (-1);
 		quoted_content = expanded_content;
 	}
-	
 	append(word, quoted_content);
 	free(quoted_content);
 	return (0);
@@ -197,4 +195,90 @@ static char	*read_word(t_lexer *lexer)
 	if (lexer->pos == start_pos)
 		return (freeandnull(word));
 	return (word);
+}
+
+static t_token	*create_token(t_token_type type, char *value)
+{
+	t_token *token;
+
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return NULL;
+	token->type = type;
+	token->value = value;
+	token->next = NULL;
+	return token;
+}
+
+t_token	*handle_double_symbol(t_lexer *lexer)
+{
+	char	c;
+	char	*next;
+
+	c = lexer->input[lexer->pos];
+	lexer->pos += 2;
+	if (c == '&')
+		return (create_token(TOKEN_AND, ft_strndup("&&", 2)));
+	else if (c == '|')
+		return (create_token(TOKEN_OR, ft_strndup("||", 2)));
+	else if (c == '<')
+		return (create_token(TOKEN_HEREDOC, ft_strndup("<<", 2)));
+	else if (c == '>')
+		return (create_token(TOKEN_APPEND, ft_strndup(">>", 2)));
+	else
+		return (NULL);
+}
+
+t_token	*handle_single_symbol(t_lexer *lexer)
+{
+	char	c;
+	char	*next;
+
+	c = lexer->input[lexer->pos];
+	lexer->pos++;
+	if (c == '|')
+		return (create_token(TOKEN_PIPE, ft_strndup("|", 1)));
+	if (c == '<')
+		return (create_token(TOKEN_REDIRECT_IN, ft_strndup("<", 1)));
+	if (c == '>')
+		return (create_token(TOKEN_REDIRECT_OUT, ft_strndup(">", 1)));
+	if (c == '(')
+		return (create_token(TOKEN_LPAREN, ft_strndup("(", 1)));
+	if (c == ')')
+		return (create_token(TOKEN_RPAREN, ft_strndup(")", 1)));
+	else
+		return (NULL);
+}
+
+t_token	*handle_word(t_lexer *lexer)
+{
+	char *word;
+
+	word = read_word(lexer);
+	if (!word)
+		return (create_token(TOKEN_ERROR, NULL));
+	else
+		return (create_token(TOKEN_WORD, word));
+}
+
+static t_token	*get_next_token(t_lexer *lexer)
+{
+	char	c;
+	char	next;
+	t_token	*token;
+	char	*word;
+
+	skip_whitespace(lexer);
+	if (lexer->pos >= lexer->len)
+		return create_token(TOKEN_EOF, NULL);
+	c = lexer->input[lexer->pos];
+	if(lexer->pos + 1 < lexer->len)
+	{
+		next = lexer->input[lexer->pos + 1];
+		if (c == next && ft_strchr("|<>&", c))
+			return (handle_double_symbol(lexer));
+	}
+	if (ft_strchr("|<>()", c))
+		return (handle_single_symbol(lexer));
+	return (handle_word(lexer));
 }
