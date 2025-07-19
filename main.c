@@ -165,6 +165,7 @@ int main(void)
         }
         else
         {
+            ft_push(&tree);
             runcmd_tree(tree);
             //free_tree(tree);
         }

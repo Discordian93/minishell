@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/17 22:57:19 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/19 18:59:55 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,5 @@ char *ft_strjoin_free(char *s1, const char *s2);
 int count_split(char **str);
 void free_split(char ***s, int total_count);
 char *get_command_path(const char *cmd);
+void    ft_push(t_tree_node **tree);
 #endif

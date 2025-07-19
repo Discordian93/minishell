@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/17 22:58:43 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/19 19:01:08 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,31 @@ t_tree_node *parseexec_tree(char *input)
     //free_tokens(token);
     
     return (current_node);
+}
+
+void    ft_push(t_tree_node **tree)
+{
+    t_tree_node *root;
+    t_tree_node *second_root;
+    t_tree_node *last;
+    t_tree_node *exec;
+    if (!tree|| !(*tree) || !(*tree)->left)
+        return ;
+    if (is_node_type((*tree) -> left, "EXEC"))
+        return ;
+    root = *tree;
+    second_root = (*tree)->left;
+    last = root;
+    while (last -> left != NULL && !is_node_type(last ->left, "EXEC"))
+    {
+        last = last -> left;
+    }
+    exec = last->left;
+    last->left = root;
+    root->left = exec;
+    *tree = second_root;
+    
+    
 }
 
 // Parsea pipes y crea un nodo del árbol
