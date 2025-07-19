@@ -1,19 +1,5 @@
-<<<<<<< Updated upstream
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/10 23:34:10 by yuliano          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-=======
 #ifndef MINISHELL_H
 # define MINISHELL_H
->>>>>>> Stashed changes
 
 # include <ctype.h>
 # include <stdio.h>
@@ -38,12 +24,6 @@ typedef enum e_token_type
 	TOKEN_ERROR
 }	t_token_type;
 
-<<<<<<< Updated upstream
-#define EXEC  1   // Comando ejecutable simple
-#define REDIR 2   // Comando con redirección (< o >)
-#define PIPE  3   // Comando con pipe (|)
-# define MAXARGS 15
-=======
 typedef struct s_token
 {
 	t_token_type	type;
@@ -59,48 +39,9 @@ typedef enum e_ast_type
 	ASYT_OR,
 	AST_REDIRECT
 }	t_ast_type;
->>>>>>> Stashed changes
 
-// Estructura base de un comando
-typedef struct s_cmd 
+typedef enum e_redir_type
 {
-<<<<<<< Updated upstream
-  int type;  // Tipo del comando (EXEC, PIPE, REDIR)
-}	t_cmd;
-
-
-
-// Nodo EXEC: Representa un comando simple (ej: ls -l)
-typedef struct s_exec
-{
-  int type;
-  char *argv[MAXARGS];
-}	t_exec;
-
-
-
-// Nodo REDIR: Representa una redirección (< o >)
-typedef struct s_redir 
-{
-  int type;
-  t_cmd *cmd;      // Subcomando sobre el que se aplica la redirección
-  char *file;           // Nombre del archivo destino o fuente
-  int mode;             // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
-  int fd;               // File descriptor a redirigir (0 = stdin, 1 = stdout)
-}	t_redir;
-
-
-
-// Nodo PIPE: Representa un pipe entre dos comandos (ej: ls | grep)
-typedef struct s_pipe
-{
-  int type;
-  t_cmd *left;     // Lado izquierdo del pipe
-  t_cmd *right;    // Lado derecho del pipe
-}	t_pipe;
-
-char **ft_token(char *str);
-=======
 	REDIR_IN,
 	REDIT_OUT,
 	REDIR_HEREDOC,
@@ -154,5 +95,7 @@ char		*ft_strndup(char *str, size_t n);
 int			ft_isalnum(char c);
 static char	*extract_substring(const char *str, size_t start, size_t len);
 char		*strjoin(char *s1, char *s2);
->>>>>>> Stashed changes
+void		*append(char **s1, char *s2);
+void		*freeandnull(char *s);
+int			is_variable_start(t_lexer *lexer);
 #endif

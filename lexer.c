@@ -77,8 +77,9 @@ static char	*expand_variables(const char *str)
 {
 	char	*result;
 	size_t	i;
-	char	*c;
+	char	c[2];
 	size_t	len;
+	char	*expanded;
 
 	result = malloc(1);
 	if (!result)
@@ -94,7 +95,106 @@ static char	*expand_variables(const char *str)
 			|| ft_isalnum(str[i + 1])
 			|| str[i + 1] == '_'))
 			{
-				
+				expanded = expand_single_var(str , &i, len);
+				if(expanded)
+				{
+					append(&result, expanded);
+					free(expanded);
+				}
+			}
+			else
+			{
+				c[0] = str[i++];
+				c[1] = '\0';
+				append(&result, c);
 			}
 	}
+	return (result);
+}
+
+
+static int	handle_quoted_part(char **word, t_lexer *lexer)
+{
+	char	*quoted_content;
+	char	*expanded_content;
+	char	quote_type;
+
+	quote_type = lexer->input[lexer->pos];
+	quoted_content = read_quoted_string(lexer, quote_type);
+	if (!quoted_content)
+		return (-1);
+	
+	if (quote_type == '"')
+	{
+		expanded_content = expand_variables(quoted_content);
+		free(quoted_content);
+		if (!expanded_content)
+			return (-1);
+		quoted_content = expanded_content;
+	}
+	
+	append(word, quoted_content);
+	free(quoted_content);
+	return (0);
+}
+
+static void	handle_unquoted_expansion(char **word, t_lexer *lexer)
+{
+	char	*expanded_part;
+
+	expanded_part = expand_single_var(lexer->input, &(lexer->pos), lexer->len);
+	if (expanded_part)
+	{
+		append(word, expanded_part);
+		free(expanded_part);
+	}
+}
+
+static int	build_word_segment(char **word, t_lexer *lexer)
+{
+	char	c;
+	char	tmp[2];
+
+	c = lexer->input[lexer->pos];
+	if (c == '\'' || c == '"')
+	{
+		if (handle_quoted_part(word, lexer) == -1)
+			return (-1);
+	}
+	else if (is_variable_start(lexer))
+		handle_unquoted_expansion(word, lexer);
+	else if (c && !ft_strchr(" \t\n|<>&()", c))
+	{
+		tmp[0] = lexer->input[lexer->pos++];
+		tmp[1] = '\0';
+		append(word, tmp);
+	}
+	else
+		return (1);
+	
+	return (0);
+}
+
+static char	*read_word(t_lexer *lexer)
+{
+	char	*word;
+	size_t	start_pos;
+	int		status;
+
+	word = malloc(1);
+	if (!word)
+		return (NULL);
+	*word = '\0';
+	start_pos = lexer->pos;
+	while (lexer->pos < lexer->len)
+	{
+		status = build_word_segment(&word, lexer);
+		if (status == 1)
+			break;
+		if (status == -1)
+			return (freeandnull(word));
+	}
+	if (lexer->pos == start_pos)
+		return (freeandnull(word));
+	return (word);
 }

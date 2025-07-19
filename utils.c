@@ -89,3 +89,40 @@ char	*strjoin(char *s1, char *s2)
 	joined[len1 + len2] = '\0';
 	return (joined);
 }
+
+void	*append(char **s1, char *s2)
+{
+	char	*appended;
+
+	appended = strjoin(*s1, s2);
+	if (appended)
+	{
+		free(*s1);
+		*s1 = appended;
+	}
+	else
+		exit(1);
+}
+
+void	*freeandnull(char *s)
+{
+	free(s);
+	return (NULL);
+}
+
+int	is_variable_start(t_lexer *lexer)
+{
+	char	next_char;
+
+	if (lexer->input[lexer->pos] == '$' && (lexer->pos + 1) < lexer->len)
+	{
+		next_char = lexer->input[lexer->pos + 1];
+		if (next_char == '?'
+			|| ft_isalnum(next_char)
+			|| next_char == '_')
+		{
+			return (1);
+		}
+	}
+	return (0);
+}
