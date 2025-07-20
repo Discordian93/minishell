@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/19 19:01:08 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/20 11:42:37 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ t_tree_node *parseexec_tree(char *input)
     char **token;
     t_exec *exec;
     t_redir *redir;
-    t_tree_node *exec_node;
-    t_tree_node *current_node;
+    t_tree_node *root_exec;
+    t_tree_node *current;
     t_tree_node *redir_node;
     int i, j, mode, fd;
 
@@ -84,32 +84,23 @@ t_tree_node *parseexec_tree(char *input)
     token = ft_token(input);
     i = 0;
     j = 0;
-    
-    // Crear nodo EXEC base
-    exec_node = create_tree_node((void *)exec, "EXEC");
-    current_node = exec_node;
+
+    root_exec = create_tree_node((void *)exec, "EXEC");
+    current = root_exec;
     
     while (token[i] != NULL)
     {
         if (is_redirection(token[i]))
         {
-            i++; // Avanzar al nombre del archivo
+            i++;
             if (!token[i])
                 panic("Falta archivo después de redirección");
-            
-            // Obtener información de la redirección
             get_redir_info(token[i - 1], &mode, &fd);
-            
             ft_redir(&redir, token[i], mode, fd);
-            
-            // Crear nodo de redirección
             redir_node = create_tree_node((void *)redir, "REDIR");
-            
-            // Encadenar: la redirección actual apunta al nodo anterior
-            redir_node->left = current_node;
-            
-            // La redirección actual se convierte en el nodo actual
-            current_node = redir_node;
+            current->left = redir_node;
+            current = redir_node;
+
         }
         else
         {
@@ -122,33 +113,10 @@ t_tree_node *parseexec_tree(char *input)
     // Liberar tokens originales
     //free_tokens(token);
     
-    return (current_node);
+    return (root_exec);
 }
 
-void    ft_push(t_tree_node **tree)
-{
-    t_tree_node *root;
-    t_tree_node *second_root;
-    t_tree_node *last;
-    t_tree_node *exec;
-    if (!tree|| !(*tree) || !(*tree)->left)
-        return ;
-    if (is_node_type((*tree) -> left, "EXEC"))
-        return ;
-    root = *tree;
-    second_root = (*tree)->left;
-    last = root;
-    while (last -> left != NULL && !is_node_type(last ->left, "EXEC"))
-    {
-        last = last -> left;
-    }
-    exec = last->left;
-    last->left = root;
-    root->left = exec;
-    *tree = second_root;
-    
-    
-}
+
 
 // Parsea pipes y crea un nodo del árbol
 t_tree_node *parsepipe_tree(char *input)
