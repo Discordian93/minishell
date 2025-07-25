@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/25 11:13:15 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/25 19:52:05 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 # include "libft/libft.h"
+
 
 # define MAXARGS 15
 # define READ_END 0
@@ -77,5 +79,7 @@ char *ft_strjoin_free(char *s1, const char *s2);
 int count_split(char **str);
 void free_split(char ***s, int total_count);
 char *get_command_path(const char *cmd);
+void	ft_cd(char **exe);
+int is_bultin();
 void    ft_push(t_tree_node **tree);
 #endif

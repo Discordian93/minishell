@@ -34,7 +34,6 @@ int is_node_type(t_tree_node *node, char *tipo)
     return (ft_strncmp(node->etiqueta, tipo, ft_strlen(tipo)) == 0);
 }
 
-
 void runcmd_tree(t_tree_node *tree)
 {
     pid_t pid;
@@ -49,25 +48,30 @@ void runcmd_tree(t_tree_node *tree)
     if (is_node_type(tree, "EXEC"))
     {
         t_exec *exec = (t_exec *)tree->objeto;
-        pid = fork();
-        if (pid == -1)
+		if (ft_strncmp(exec->argv[0],"cd",2) == 0)
+			ft_cd(exec->argv);
+        else 
+		{
+			pid = fork();
+        	if (pid == -1)
             panic("fork failed");
 
-        if (pid == 0)
-        {
-            runcmd_tree(tree->left);
+        	if (pid == 0)
+        	{
+            	runcmd_tree(tree->left);
 
-            char *path = get_command_path(exec->argv[0]);
-            if (!path)
-                panic("command not found");
-            execve(path, exec->argv, NULL);
-            free(path);
-            panic("execve failed");
-        }
-        else
-        {
-            waitpid(pid, &status, 0);
-        }
+            	char *path = get_command_path(exec->argv[0]);
+				if (!path)
+                	panic("command not found");
+				execve(path, exec->argv, NULL);
+            	free(path);
+            	panic("execve failed");
+        	}
+        	else
+        	{
+            	waitpid(pid, &status, 0);
+        	}
+		}
     }
     else if (is_node_type(tree, "REDIR"))
     {
@@ -124,11 +128,15 @@ void runcmd_tree(t_tree_node *tree)
 int main(void)
 {
     char *input;
-    t_tree_node *tree;
+	char prompt[1024];
 
+    t_tree_node *tree;
+	
     while (1)
     {
-        input = readline("minishell> ");
+		getcwd(prompt, sizeof(prompt));
+		char *new_prompt = ft_strjoin(prompt, "$ ");
+        input = readline(new_prompt);
 
         if (!input || strcmp(input, "exit") == 0)
         {

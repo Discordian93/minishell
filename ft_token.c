@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_token.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/13 13:54:48 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:55:22 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ int main(void)
         "    'Hola   mundo   '     ",      // espacios exteriores con comillas
         "ls -l | grep 'main.c'",              // mezcla con metacaracteres
         "'Esto  es una \"prueba\" comillas simples'",
+        "cd ./home .. .",
         NULL
     };
 
