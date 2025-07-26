@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/26 10:56:10 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/26 23:34:24 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,23 @@ typedef enum e_redir_type
 } t_redir_type;
 
 // Estructura genérica de nodo del árbol
-typedef struct s_tree_node
+typedef struct s_tree
 {
-    char *etiqueta;                  // Etiqueta que identifica el tipo: "EXEC", "REDIR", "PIPE"
-    void *objeto;                    // Puntero genérico al objeto (exec, redir, pipe, etc.)
-    struct s_tree_node *left;       // Nodo hijo izquierdo
-    struct s_tree_node *right;      // Nodo hijo derecho
-} t_tree_node;
+    char *label;
+    void *obj;
+    struct s_tree *left;
+    struct s_tree *right;
+} t_tree;
 
 typedef struct s_data
 {
     char prompt[1024];
     char *input;
     char *new_prompt;
-    t_tree_node *tree;
+    t_tree *tree;
 }   t_data;
 
-// Estructuras específicas SIN campo type (ya no heredan de t_cmd)
+
 typedef struct s_exec
 {
     char *argv[MAXARGS];
@@ -66,32 +66,41 @@ typedef struct s_exec
 typedef struct s_redir 
 {
     t_redir_type   type;
-    char *file;                      // Nombre del archivo destino o fuente
-    int mode;                        // Modo de apertura (O_RDONLY, O_WRONLY, etc.)
-    int fd;                          // File descriptor a redirigir (0 = stdin, 1 = stdout)
+    char *file;
+    int mode;
+    int fd;                          
 } t_redir;
 
 
 
-// Funciones para manejo del árbol
-t_tree_node *init_tree(void);
-t_tree_node *create_tree_node(void *objeto, char *etiqueta);
-void free_tree(t_tree_node *root);
-int is_node_type(t_tree_node *node, char *tipo);
-int is_redirection(char *token);
-void get_redir_info(char *token, int *mode, int *fd);
+int     skip_separators(const char *s, int i);
+int     skip_quoted_word(const char *s, int i);
+int     skip_unquoted_word(const char *s, int i);
+int     count_words(const char *s);
+t_tree	*create_tree_node(void *obj, char *label);
+void	free_tree(t_tree *root);
+int		is_node_type(t_tree	*node, char *type);
+int		is_redirection(char *token);
+void	get_redir_info(char *token, int *mode, int *fd);
 void    ft_redir(t_redir **redir,char *file, int mode, int fd);
-t_tree_node *parseexec_tree(char *input);
-char **ft_token(const char *str);
-t_tree_node *parsepipe_tree(char *input);
-void panic(char *msg);
-char *ft_strjoin_free(char *s1, const char *s2);
-int count_split(char **str);
-void free_split(char ***s, int total_count);
-char *get_command_path(const char *cmd);
+t_tree	*parseexec_tree(char *input);
+char	**ft_token(const char *str);
+t_tree	*parsepipe_tree(char *input);
+void	panic(char *msg);
+char	*ft_strjoin_free(char *s1, const char *s2);
+int		count_split(char **str);
+void	free_split(char ***s, int total_count);
+char	*get_command_path(const char *cmd);
 void	ft_cd(char **exe);
-int is_bultin(t_exec *exec);
-void free_tree(t_tree_node *node);
-void    ft_push(t_tree_node **tree);
-void ft_free(t_data *data);
+int		is_bultin(t_exec *exec);
+void	free_tree(t_tree *node);
+void	ft_free(t_data *data);
+void	free_and_exit(t_data *data, int status);
+void	run_exec(t_tree *tree, t_data *data);
+void	execute_external_command(t_tree *tree, t_data *data, t_exec *exec);
+void	run_redir(t_tree *tree, t_data *data);
+void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2]);
+void	run_pipe_child_right(t_tree *tree, t_data *data, int fd[2]);
+void	run_pipe(t_tree *tree, t_data *data);
+void	runcmd(t_tree *tree, t_data *data);
 #endif

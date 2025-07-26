@@ -1,0 +1,126 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   runcmd.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
+/*   Updated: 2025/07/26 23:42:27 by yuliano          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+/*
+ * Ejecuta un nodo de tipo EXEC.
+ * Si el comando es un built-in, lo ejecuta directamente en el proceso actual.
+ * Si no, crea un proceso hijo para ejecutar el comando externo usando execve.
+ * Esta función maneja la ejecución de comandos simples en el minishell.
+ */
+void	run_exec(t_tree *tree, t_data *data)
+{
+	t_exec	*exec;
+	pid_t	pid;
+
+	exec = (t_exec *)tree->obj;
+	if (is_bultin(exec))
+		ft_cd(exec->argv);
+	else
+	{
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork failed");
+			return ;
+		}
+		if (pid == 0)
+			execute_external_command(tree, data, exec);
+		else if (pid > 0)
+			waitpid(pid, NULL, 0);
+	}
+}
+
+/*
+ * Ejecuta un comando externo en el proceso hijo.
+ * Busca la ruta del comando, la copia a un buffer y llama a execve.
+ * Si ocurre un error, muestra un mensaje y termina el proceso.
+ */
+void	execute_external_command(t_tree *tree, t_data *data, t_exec *exec)
+{
+	char	*path;
+	char	path_buf[1024];
+
+	runcmd(tree->left, data);
+	path = get_command_path(exec->argv[0]);
+	if (!path)
+		panic("command not found");
+	ft_strlcpy(path_buf, path, sizeof(path_buf));
+	free(path);
+	execve(path_buf, exec->argv, NULL);
+	panic("execve failed");
+}
+
+/*
+ * Ejecuta un nodo de tipo REDIR, realizando la redirección de archivos
+ * y luego ejecutando el comando hijo.
+ */
+void	run_redir(t_tree *tree, t_data *data)
+{
+	t_redir	*redir;
+	int		fd;
+
+	redir = (t_redir *)tree->obj;
+	fd = open(redir->file, redir->mode, 0644);
+	if (fd < 0)
+		panic("open failed");
+	if (dup2(fd, redir->fd) < 0)
+		panic("dup2 failed");
+	close(fd);
+	runcmd(tree->left, data);
+}
+
+/*
+ * Ejecuta un nodo de tipo PIPE, creando un pipe y dos procesos hijos
+ * para manejar la comunicación entre los comandos.
+ */
+void	run_pipe(t_tree *tree, t_data *data)
+{
+	int		fd[2];
+	pid_t	pid_left;
+	pid_t	pid_right;
+
+	if (pipe(fd) == -1)
+		perror("pipe failed");
+	pid_left = fork();
+	if (pid_left == -1)
+		perror("fork failed");
+	if (pid_left == 0)
+		run_pipe_child_left(tree, data, fd);
+	pid_right = fork();
+	if (pid_right == -1)
+		perror("fork failed");
+	if (pid_right == 0)
+		run_pipe_child_right(tree, data, fd);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid_left, NULL, 0);
+	waitpid(pid_right, NULL, 0);
+}
+
+/*
+ * Ejecuta el árbol de comandos recibido, 
+ * manejando los diferentes tipos de nodos:
+ * ejecución simple, redirección y pipes.
+ */
+void	runcmd(t_tree *tree, t_data *data)
+{
+	if (!tree)
+		return ;
+	if (is_node_type(tree, "EXEC"))
+		run_exec(tree, data);
+	else if (is_node_type(tree, "REDIR"))
+		run_redir(tree, data);
+	else if (is_node_type(tree, "PIPE"))
+		run_pipe(tree, data);
+}

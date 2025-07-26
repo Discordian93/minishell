@@ -6,7 +6,7 @@
 #    By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 23:01:13 by yuliano           #+#    #+#              #
-#    Updated: 2025/07/26 09:55:15 by yuliano          ###   ########.fr        #
+#    Updated: 2025/07/26 23:39:21 by yuliano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 NAME = minishell
 
 # Archivos objeto
-OBJS = ft_token.o main.o parse.o util.o sh.o bultins.o tools.o
+OBJS = ft_token.o main.o parse.o util.o sh.o bultins.o tools.o runcmd.o
 
 # Flags de compilación: incluye depuración (-g)
 CFLAGS = -Wall -Wextra -Werror -g -I./

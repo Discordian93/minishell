@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/20 11:42:37 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/26 20:43:10 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void get_redir_info(char *token, int *mode, int *fd)
     }
     else if (ft_strncmp(token, "<<", 2) == 0)
     {
-        *mode = O_RDONLY; // Heredoc - necesita tratamiento especial
+        *mode = O_RDONLY;
         *fd = 0;
     }
     else if (ft_strncmp(token, "<", 1) == 0)
@@ -54,23 +54,22 @@ void    ft_redir(t_redir **redir,char *file, int mode, int fd)
     *redir = malloc(sizeof(t_redir));
     if (!redir)
         panic("malloc failed");
-    (*redir)->file = file;
+    (*redir)->file = ft_strdup(file);
     (*redir)->mode = mode;
     (*redir)->fd = fd;
 }
 
 // Parsea comandos simples con múltiples redirecciones encadenadas
-t_tree_node *parseexec_tree(char *input)
+t_tree  *parseexec_tree(char *input)
 {
-    char **token;
-    t_exec *exec;
+    char    **token;
+    t_exec  *exec;
     t_redir *redir;
-    t_tree_node *root_exec;
-    t_tree_node *current;
-    t_tree_node *redir_node;
+    t_tree  *root_exec;
+    t_tree  *current;
+    t_tree  *redir_node;
     int i, j, mode, fd;
 
-    // Crear estructura exec
     exec = malloc(sizeof(t_exec));
     if (!exec)
         panic("malloc failed");
@@ -104,14 +103,13 @@ t_tree_node *parseexec_tree(char *input)
         }
         else
         {
-            // Es un argumento del comando
-            exec->argv[j++] = token[i];
+            exec->argv[j++] = ft_strdup(token[i]);
         }
         i++;
     }
     
-    // Liberar tokens originales
-    //free_tokens(token);
+    if (token)
+        free_split(&token, i);
     
     return (root_exec);
 }
@@ -119,15 +117,14 @@ t_tree_node *parseexec_tree(char *input)
 
 
 // Parsea pipes y crea un nodo del árbol
-t_tree_node *parsepipe_tree(char *input)
+t_tree  *parsepipe_tree(char *input)
 {
-    char *pipe_pos;
-    char *left_part;
-    char *right_part;
-    t_tree_node *left_node;
-    t_tree_node *right_node;
-    t_tree_node *pipe_node;
-    char *pipe;
+    char    *pipe_pos;
+    char    *left_part;
+    char    *right_part;
+    t_tree  *left_node;
+    t_tree  *right_node;
+    t_tree  *pipe_node;
 
     pipe_pos = ft_strchr(input, '|');
     if (pipe_pos == NULL)
@@ -140,11 +137,8 @@ t_tree_node *parsepipe_tree(char *input)
     left_node = parseexec_tree(left_part);
     right_node = parsepipe_tree(right_part);
     
-    pipe = malloc(sizeof(char));
-    if (!pipe)
-        panic("malloc failed");
     
-    pipe_node = create_tree_node((void *)pipe, "PIPE");
+    pipe_node = create_tree_node(NULL, "PIPE");
     pipe_node->left = left_node;
     pipe_node->right = right_node;
     

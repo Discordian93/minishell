@@ -1,131 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
+/*   Updated: 2025/07/26 23:35:32 by yuliano          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "minishell.h"
-
-// panic(): Imprime mensaje de error y sale
-void panic(char *msg) 
-{
-    perror(msg);
-    exit(1);
-}
-
-
-// Crea un nuevo nodo del árbol con el objeto y etiqueta dados
-t_tree_node *create_tree_node(void *objeto, char *etiqueta)
-{
-    t_tree_node *new_node;
-
-    new_node = malloc(sizeof(t_tree_node));
-    if (!new_node)
-        panic("malloc failed in create_tree_node");
-    
-    new_node->etiqueta = etiqueta;
-    new_node->objeto = objeto;
-    new_node->left = NULL;
-    new_node->right = NULL;
-    
-    return (new_node);
-}
-
-// Verifica si un nodo es de un tipo específico
-int is_node_type(t_tree_node *node, char *tipo)
-{
-    if (!node || !node->etiqueta || !tipo)
-        return (0);
-    
-    return (ft_strncmp(node->etiqueta, tipo, ft_strlen(tipo)) == 0);
-}
-
-void runcmd_tree(t_tree_node *tree)
-{
-    pid_t pid;
-    pid_t pid_left;
-    pid_t pid_right;
-    int status;
-    int fd[2];
-
-    if (!tree)
-        return;
-
-    if (is_node_type(tree, "EXEC"))
-    {
-        t_exec *exec = (t_exec *)tree->objeto;
-		if (is_bultin(exec))
-        {
-            ft_cd(exec->argv);
-        }
-			
-        else 
-		{
-			pid = fork();
-        	if (pid == -1)
-            panic("fork failed");
-
-        	if (pid == 0)
-        	{
-            	runcmd_tree(tree->left);
-
-            	char *path = get_command_path(exec->argv[0]);
-				if (!path)
-                	panic("command not found");
-				execve(path, exec->argv, NULL);
-            	free(path);
-            	panic("execve failed");
-        	}
-        	else
-        	{
-            	waitpid(pid, &status, 0);
-        	}
-		}
-    }
-    else if (is_node_type(tree, "REDIR"))
-    {
-        t_redir *redir = (t_redir *)tree->objeto;
-        int fd = open(redir->file, redir->mode, 0644);
-        if (fd < 0)
-            panic("open failed");
-        if (dup2(fd, redir->fd) < 0)
-    		panic("dup2 failed");
-        close(fd);
-        runcmd_tree(tree->left);
-    }
-    else if (is_node_type(tree, "PIPE"))
-    {
-        if (pipe(fd) == -1)
-            panic("pipe failed");
-
-        pid_left = fork();
-        if (pid_left == -1)
-            panic("fork failed");
-
-        if (pid_left == 0)
-        {
-            close(fd[READ_END]);
-            if (dup2(fd[WRITE_END], STDOUT_FILENO) < 0)
-                panic("dup2 write failed");
-            close(fd[WRITE_END]);
-            runcmd_tree(tree->left);
-            exit(EXIT_SUCCESS);
-        }
-
-        pid_right = fork();
-        if (pid_right == -1)
-            panic("fork failed");
-
-        if (pid_right == 0)
-        {
-            close(fd[WRITE_END]);
-            if (dup2(fd[READ_END], STDIN_FILENO) < 0)
-                panic("dup2 read failed");
-            close(fd[WRITE_END]);
-            runcmd_tree(tree->right);
-            exit(EXIT_SUCCESS);
-        }
-
-        close(fd[READ_END]);
-        close(fd[WRITE_END]);
-        waitpid(pid_left, &status, 0);
-        waitpid(pid_right, &status, 0);
-    }
-}
 
 t_data	*init_data()
 {
@@ -139,17 +25,19 @@ t_data	*init_data()
 	return (data);
 
 }
+
+
 int main(void)
 {
-	t_data *data;
+    t_data *data;
 
-	data = init_data();
-	
+    data = init_data();
+
     while (1)
     {
-		getcwd(data->prompt, sizeof(data->prompt));
-		char *new_prompt = ft_strjoin(data->prompt, "$  ");
-        data->input = readline(new_prompt);
+        getcwd(data->prompt, sizeof(data->prompt));
+        data->new_prompt = ft_strjoin(data->prompt, "$  ");
+        data->input = readline(data->new_prompt);
 
         if (!data->input || strcmp(data->input, "exit") == 0)
         {
@@ -165,11 +53,14 @@ int main(void)
         if (!data->tree)
             write(2, "Error\n", 6);
         else
-            runcmd_tree(data->tree);
+            runcmd(data->tree, data);
+
         ft_free(data);
         rl_on_new_line();
     }
-	free(data);
+
+    rl_clear_history(); 
+    free(data);
     return 0;
 }
 
