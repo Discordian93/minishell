@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/25 19:52:05 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/26 10:56:10 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define READ_END 0
 # define WRITE_END 1
 
+
+
 typedef enum e_redir_type
 {
     FILE_TRUNC,
@@ -46,6 +48,14 @@ typedef struct s_tree_node
     struct s_tree_node *left;       // Nodo hijo izquierdo
     struct s_tree_node *right;      // Nodo hijo derecho
 } t_tree_node;
+
+typedef struct s_data
+{
+    char prompt[1024];
+    char *input;
+    char *new_prompt;
+    t_tree_node *tree;
+}   t_data;
 
 // Estructuras específicas SIN campo type (ya no heredan de t_cmd)
 typedef struct s_exec
@@ -80,6 +90,8 @@ int count_split(char **str);
 void free_split(char ***s, int total_count);
 char *get_command_path(const char *cmd);
 void	ft_cd(char **exe);
-int is_bultin();
+int is_bultin(t_exec *exec);
+void free_tree(t_tree_node *node);
 void    ft_push(t_tree_node **tree);
+void ft_free(t_data *data);
 #endif

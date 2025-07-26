@@ -48,8 +48,11 @@ void runcmd_tree(t_tree_node *tree)
     if (is_node_type(tree, "EXEC"))
     {
         t_exec *exec = (t_exec *)tree->objeto;
-		if (ft_strncmp(exec->argv[0],"cd",2) == 0)
-			ft_cd(exec->argv);
+		if (is_bultin(exec))
+        {
+            ft_cd(exec->argv);
+        }
+			
         else 
 		{
 			pid = fork();
@@ -124,39 +127,49 @@ void runcmd_tree(t_tree_node *tree)
     }
 }
 
+t_data	*init_data()
+{
+	t_data *data;
+	data = malloc(sizeof(t_data));
+	if (!data)
+		return (NULL);
+	data->input = NULL;
+	data->new_prompt = NULL;
+	data->tree = NULL;
+	return (data);
 
+}
 int main(void)
 {
-    char *input;
-	char prompt[1024];
+	t_data *data;
 
-    t_tree_node *tree;
+	data = init_data();
 	
     while (1)
     {
-		getcwd(prompt, sizeof(prompt));
-		char *new_prompt = ft_strjoin(prompt, "$ ");
-        input = readline(new_prompt);
+		getcwd(data->prompt, sizeof(data->prompt));
+		char *new_prompt = ft_strjoin(data->prompt, "$  ");
+        data->input = readline(new_prompt);
 
-        if (!input || strcmp(input, "exit") == 0)
+        if (!data->input || strcmp(data->input, "exit") == 0)
         {
-            free(input);
+            ft_free(data);
             break;
         }
 
-        if (*input)
-            add_history(input);
+        if (*data->input)
+            add_history(data->input);
 
-        tree = parsepipe_tree(input);
+        data->tree = parsepipe_tree(data->input);
 
-        if (!tree)
+        if (!data->tree)
             write(2, "Error\n", 6);
         else
-            runcmd_tree(tree);
-
-        free(input);
+            runcmd_tree(data->tree);
+        ft_free(data);
         rl_on_new_line();
     }
+	free(data);
     return 0;
 }
 

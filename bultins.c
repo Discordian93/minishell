@@ -6,15 +6,18 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:42:06 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/25 20:38:50 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/26 09:25:13 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int is_bultin()
+int is_bultin(t_exec *exec)
 {
-	return (1);
+	if (ft_strncmp(exec->argv[0],"cd",2) == 0)
+		return (1);
+	else
+		return (0);
 }
 
 void	ft_cd(char **exe)

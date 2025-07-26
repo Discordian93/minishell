@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 18:49:37 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/17 23:01:49 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/26 09:37:07 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,23 +57,6 @@ char *ft_strjoin_free(char *s1, const char *s2)
     return (result);
 }
 
-/**
- * Cuenta el número de elementos en un array de strings
- * @param str: array de strings terminado en NULL
- * @return: número de elementos
- */
-int count_split(char **str)
-{
-    int i = 0;
-    
-    if (!str)
-        return (0);
-    
-    while (str[i] != NULL)
-        i++;
-    
-    return (i);
-}
 
 /**
  * Libera la memoria de un array de strings
