@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/28 16:07:28 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/07/28 17:14:03 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,9 @@ int		is_node_type(t_tree	*node, char *type);
 int		is_redirection(char *token);
 void	get_redir_info(char *token, int *mode, int *fd);
 void    ft_redir(t_redir **redir,char *file, int mode, int fd);
+t_exec  *initialize_exec(void);
+t_tree  *build_exec_tree(t_exec *exec, char **token);
+void    handle_redirection(t_tree **current, char **token, int *i);
 t_tree	*parseexec_tree(char *input);
 char	**ft_token(const char *str);
 t_tree	*parsepipe_tree(char *input);
