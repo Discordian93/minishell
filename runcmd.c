@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   runcmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/26 23:42:27 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/28 15:44:18 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	run_exec(t_tree *tree, t_data *data)
 	pid_t	pid;
 
 	exec = (t_exec *)tree->obj;
-	if (is_bultin(exec))
+	if (is_builtin_parents(exec))
 		ft_cd(exec->argv);
 	else
 	{
@@ -35,23 +35,30 @@ void	run_exec(t_tree *tree, t_data *data)
 			return ;
 		}
 		if (pid == 0)
-			execute_external_command(tree, data, exec);
-		else if (pid > 0)
+		{
+			runcmd(tree->left, data);
+			if (is_builtin_child(exec))
+				execute_builtin_child(exec);
+			else
+				execute_external_command(exec);
+		}
+		if (pid > 0)
 			waitpid(pid, NULL, 0);
 	}
 }
+
+
 
 /*
  * Ejecuta un comando externo en el proceso hijo.
  * Busca la ruta del comando, la copia a un buffer y llama a execve.
  * Si ocurre un error, muestra un mensaje y termina el proceso.
  */
-void	execute_external_command(t_tree *tree, t_data *data, t_exec *exec)
+void	execute_external_command(t_exec *exec)
 {
 	char	*path;
 	char	path_buf[1024];
 
-	runcmd(tree->left, data);
 	path = get_command_path(exec->argv[0]);
 	if (!path)
 		panic("command not found");
@@ -107,6 +114,7 @@ void	run_pipe(t_tree *tree, t_data *data)
 	waitpid(pid_left, NULL, 0);
 	waitpid(pid_right, NULL, 0);
 }
+
 
 /*
  * Ejecuta el árbol de comandos recibido, 

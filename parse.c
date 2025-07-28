@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/26 20:43:10 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/28 16:40:33 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void    ft_redir(t_redir **redir,char *file, int mode, int fd)
 }
 
 // Parsea comandos simples con múltiples redirecciones encadenadas
-t_tree  *parseexec_tree(char *input)
+t_tree  *parseexec_tree(char input)
 {
     char    **token;
     t_exec  *exec;
@@ -81,6 +81,12 @@ t_tree  *parseexec_tree(char *input)
     }
 
     token = ft_token(input);
+    if (!token)
+    {
+        perror("Error de token\n");
+        return (NULL);
+    }
+        
     i = 0;
     j = 0;
 
@@ -102,9 +108,7 @@ t_tree  *parseexec_tree(char *input)
 
         }
         else
-        {
-            exec->argv[j++] = ft_strdup(token[i]);
-        }
+			exec->argv[j++] = ft_strdup(token[i]);
         i++;
     }
     

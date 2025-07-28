@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:21:24 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/26 23:36:08 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/28 11:44:16 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,35 +15,35 @@
 // panic(): Imprime mensaje de error y sale
 void panic(char *msg) 
 {
-    perror(msg);
-    exit(1);
+	perror(msg);
+	exit(1);
 }
 
 
 // Crea un nuevo nodo del árbol con el objeto y etiqueta dados
 t_tree	*create_tree_node(void *obj, char *label)
 {
-    t_tree *new_node;
+	t_tree *new_node;
 
-    new_node = malloc(sizeof(t_tree));
-    if (!new_node)
-        perror("malloc failed in create_tree_node");
-    
-    new_node->label = label;
-    new_node->obj = obj;
-    new_node->left = NULL;
-    new_node->right = NULL;
-    
-    return (new_node);
+	new_node = malloc(sizeof(t_tree));
+	if (!new_node)
+		perror("malloc failed in create_tree_node");
+	
+	new_node->label = label;
+	new_node->obj = obj;
+	new_node->left = NULL;
+	new_node->right = NULL;
+	
+	return (new_node);
 }
 
 // Verifica si un nodo es de un tipo específico
 int	is_node_type(t_tree *node, char *type)
 {
-    if (!node || !node->label || !type)
-        return (0);
-    
-    return (ft_strncmp(node->label, type, ft_strlen(type)) == 0);
+	if (!node || !node->label || !type)
+		return (0);
+	
+	return (ft_strncmp(node->label, type, ft_strlen(type)) == 0);
 }
 
 

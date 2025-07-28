@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/26 23:34:24 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/28 16:07:28 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include <stdlib.h>
 # include "libft/libft.h"
 
-
+# define PATH_MAX 4096
 # define MAXARGS 15
 # define READ_END 0
 # define WRITE_END 1
@@ -91,13 +91,17 @@ char	*ft_strjoin_free(char *s1, const char *s2);
 int		count_split(char **str);
 void	free_split(char ***s, int total_count);
 char	*get_command_path(const char *cmd);
+void	ft_echo(char **exec);
 void	ft_cd(char **exe);
-int		is_bultin(t_exec *exec);
+void	ft_pwd();
+int     is_builtin_parents(t_exec *exec);
+int     is_builtin_child(t_exec *exec);
 void	free_tree(t_tree *node);
 void	ft_free(t_data *data);
 void	free_and_exit(t_data *data, int status);
 void	run_exec(t_tree *tree, t_data *data);
-void	execute_external_command(t_tree *tree, t_data *data, t_exec *exec);
+void	execute_external_command(t_exec *exec);
+void    execute_builtin_child(t_exec *exec);
 void	run_redir(t_tree *tree, t_data *data);
 void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2]);
 void	run_pipe_child_right(t_tree *tree, t_data *data, int fd[2]);
