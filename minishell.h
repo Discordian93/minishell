@@ -43,7 +43,7 @@ typedef enum e_ast_type
 typedef enum e_redir_type
 {
 	REDIR_IN,
-	REDIT_OUT,
+	REDIR_OUT,
 	REDIR_HEREDOC,
 	REDIR_APPEND
 }	t_redir_type;

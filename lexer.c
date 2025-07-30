@@ -282,3 +282,58 @@ static t_token	*get_next_token(t_lexer *lexer)
 		return (handle_single_symbol(lexer));
 	return (handle_word(lexer));
 }
+
+t_token	*lexer_tokenize(t_lexer *lexer)
+{
+	t_token	*head;
+	t_token	*tail;
+	t_token	*token;
+
+	head = NULL;
+	tail = NULL;
+	while (1)
+	{
+		token = get_next_token(lexer);
+		if (!token)
+			break;
+		if (token->type == TOKEN_ERROR)
+		{
+			token_list_destroy(head);
+			free(token);
+			return (NULL);
+		}
+		if (!head)
+		{
+			head = token;
+			tail = token;
+		}
+		else
+		{
+			tail->next = token;
+			tail = token;
+		}
+		if (token->type == TOKEN_EOF)
+			break;
+	}
+	return (head);
+}
+
+void	lexer_destroy(t_lexer *lexer)
+{
+	if (lexer)
+		free(lexer);
+}
+
+void	token_list_destroy(t_token *tokens)
+{
+	t_token	*next;
+
+	while (tokens)
+	{
+		next = tokens->next;
+		if (tokens->value)
+			free(tokens->value);
+		free(tokens);
+		tokens = next;
+	}
+}
