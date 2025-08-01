@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:21:24 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/28 11:44:16 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/01 20:30:56 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_tree	*create_tree_node(void *obj, char *label)
 
 	new_node = malloc(sizeof(t_tree));
 	if (!new_node)
-		perror("malloc failed in create_tree_node");
+		perror("malloc failed\n");
 	
 	new_node->label = label;
 	new_node->obj = obj;
@@ -60,7 +60,7 @@ void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2])
 {
 	close(fd[READ_END]);
 	if (dup2(fd[WRITE_END], STDOUT_FILENO) < 0)
-		panic("dup2 write failed");
+		panic("dup2 write failed\n");
 	close(fd[WRITE_END]);
 	runcmd(tree->left, data);
 	free_and_exit(data, EXIT_SUCCESS);
@@ -70,7 +70,7 @@ void	run_pipe_child_right(t_tree *tree, t_data *data, int fd[2])
 {
 	close(fd[WRITE_END]);
 	if (dup2(fd[READ_END], STDIN_FILENO) < 0)
-		panic("dup2 read failed");
+		panic("dup2 read failed\n");
 	close(fd[READ_END]);
 	runcmd(tree->right, data);
 	free_and_exit(data, EXIT_SUCCESS);

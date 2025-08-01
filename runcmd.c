@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   runcmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/28 15:44:18 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/01 20:30:03 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	run_exec(t_tree *tree, t_data *data)
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("fork failed");
+			perror("fork failed\n");
 			return ;
 		}
 		if (pid == 0)
@@ -56,16 +56,17 @@ void	run_exec(t_tree *tree, t_data *data)
  */
 void	execute_external_command(t_exec *exec)
 {
-	char	*path;
-	char	path_buf[1024];
+	char		*path;
+	char		path_buf[PATH_MAX];
+	extern char	**environ;
 
 	path = get_command_path(exec->argv[0]);
 	if (!path)
-		panic("command not found");
+		panic("command not found\n");
 	ft_strlcpy(path_buf, path, sizeof(path_buf));
 	free(path);
-	execve(path_buf, exec->argv, NULL);
-	panic("execve failed");
+	execve(path_buf, exec->argv, environ);
+	panic("execve failed\n");
 }
 
 /*
@@ -80,9 +81,9 @@ void	run_redir(t_tree *tree, t_data *data)
 	redir = (t_redir *)tree->obj;
 	fd = open(redir->file, redir->mode, 0644);
 	if (fd < 0)
-		panic("open failed");
+		panic("open failed\n");
 	if (dup2(fd, redir->fd) < 0)
-		panic("dup2 failed");
+		panic("dup2 failed\n");
 	close(fd);
 	runcmd(tree->left, data);
 }
@@ -98,15 +99,15 @@ void	run_pipe(t_tree *tree, t_data *data)
 	pid_t	pid_right;
 
 	if (pipe(fd) == -1)
-		perror("pipe failed");
+		perror("pipe failed\n");
 	pid_left = fork();
 	if (pid_left == -1)
-		perror("fork failed");
+		perror("fork failed\n");
 	if (pid_left == 0)
 		run_pipe_child_left(tree, data, fd);
 	pid_right = fork();
 	if (pid_right == -1)
-		perror("fork failed");
+		perror("fork failed\n");
 	if (pid_right == 0)
 		run_pipe_child_right(tree, data, fd);
 	close(fd[0]);

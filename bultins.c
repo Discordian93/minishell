@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bultins.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:42:06 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/28 16:22:07 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/01 14:43:20 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int is_builtin_parents(t_exec *exec)
 {
-	if (ft_strncmp(exec->argv[0],"cd",2) == 0)
+	if (ft_strncmp(exec->argv[0],"cd",3) == 0)
 		return (1);
 	else
 		return (0);
@@ -22,23 +22,29 @@ int is_builtin_parents(t_exec *exec)
 
 int is_builtin_child(t_exec *exec)
 {
-	if (ft_strncmp(exec->argv[0],"echo", 4) == 0)
+	if (ft_strncmp(exec->argv[0],"echo", 5) == 0)
 		return (1);
-	else if(ft_strncmp(exec->argv[0], "pwd", 3)  == 0)
+	else if(ft_strncmp(exec->argv[0], "pwd", 4)  == 0)
 		return (1);
 	else
 		return (0);
 }
 
+
+		
 void	ft_cd(char **exe)
 {
+	char *home;
 
-	if (ft_strncmp(exe[0], "cd", 2) == 0 && count_split(exe) == 1)
+	if (ft_strncmp(exe[0], "cd", 3) == 0 && count_split(exe) == 1)
 	{
-		if(chdir(getenv("HOME")) != 0)
+		home = getenv("HOME");
+		if (!home)
+			write(2, "cd: HOME not set\n", 18);
+		else if (chdir(home) != 0)
 			perror("cd");
 	}
-	else if (ft_strncmp(exe[0],"cd", 2) == 0 && count_split(exe) == 2)
+	else if (ft_strncmp(exe[0], "cd", 3) == 0 && count_split(exe) == 2)
 	{
 		if (chdir(exe[1]) != 0)
 			perror("cd");
@@ -46,35 +52,6 @@ void	ft_cd(char **exe)
 	else
 		write(2, "cd: usage: cd <dir>\n", 21);
 }
-		
-/*void	ft_echo(char **exec)
-{
-	int		i;
-	char **str;
-
-	str = exec;
-	if (ft_strncmp(exec[0], "echo", 4) == 0 && ft_strncmp(exec[1], "-n", 2) == 0)
-	{
-		i = 2;
-		while (str[i] != NULL)
-		{
-			printf("%s",str[i]);
-			if(str[i + 1] != NULL)
-				printf(" ");
-			i++;
-		}
-	}
-	else if (ft_strncmp(exec[0], "echo", 4) == 0)
-	{
-		i = 1;
-		while (str[i] != NULL)
-		{
-			printf("%s ",str[i]);
-			i++;
-		}
-		printf("\n");
-	}
-}*/
 	
 int is_echo_n(char *arg)
 {
@@ -87,6 +64,7 @@ int is_echo_n(char *arg)
         i++;
     return (arg[i] == '\0');
 }
+
 
 void ft_echo(char **exec)
 {
@@ -126,9 +104,9 @@ void	ft_pwd(void)
 
 void execute_builtin_child(t_exec *exec)
 {
-	if (ft_strncmp(exec->argv[0], "echo", 4) == 0)
+	if (ft_strncmp(exec->argv[0], "echo", 5) == 0)
 		ft_echo(exec->argv);
-	else if (ft_strncmp(exec->argv[0], "pwd", 3) == 0)
+	else if (ft_strncmp(exec->argv[0], "pwd", 4) == 0)
 		ft_pwd();
 	exit(EXIT_SUCCESS);
 	// ... otros builtins

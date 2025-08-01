@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 18:49:37 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/26 09:37:07 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/07/31 09:44:58 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,31 +58,6 @@ char *ft_strjoin_free(char *s1, const char *s2)
 }
 
 
-/**
- * Libera la memoria de un array de strings
- * @param s: puntero al array de strings
- * @param total_count: número total de elementos a liberar
- */
-
-/*
-void free_split(char ***s, int total_count)
-{
-    int i = 0;
-    
-    if (!s || !*s)
-        return;
-    
-    while (i < total_count && (*s)[i]) {
-        free((*s)[i]);
-        (*s)[i] = NULL;
-        i++;
-    }
-    
-    free(*s);
-    *s = NULL;
-}
-
-*/
 
 /**
  * Función auxiliar que busca la ruta absoluta del comando que se quiere ejecutar

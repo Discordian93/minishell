@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/26 23:35:32 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/01 19:53:17 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,11 @@ t_data	*init_data()
 	data->input = NULL;
 	data->new_prompt = NULL;
 	data->tree = NULL;
+    ft_memset(data->prompt, 0, sizeof(data->prompt));
 	return (data);
 
 }
+
 
 
 int main(void)
@@ -32,6 +34,8 @@ int main(void)
     t_data *data;
 
     data = init_data();
+    if (!data)
+        panic("malloc failed\n");
 
     while (1)
     {
@@ -39,7 +43,7 @@ int main(void)
         data->new_prompt = ft_strjoin(data->prompt, "$  ");
         data->input = readline(data->new_prompt);
 
-        if (!data->input || strcmp(data->input, "exit") == 0)
+        if (!data->input || ft_strncmp(data->input, "exit", 5) == 0)
         {
             ft_free(data);
             break;
@@ -47,9 +51,7 @@ int main(void)
 
         if (*data->input)
             add_history(data->input);
-
         data->tree = parsepipe_tree(data->input);
-
         if (!data->tree)
             write(2, "Error\n", 6);
         else
@@ -63,7 +65,6 @@ int main(void)
     free(data);
     return 0;
 }
-
 
 
 /*

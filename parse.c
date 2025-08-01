@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/07/28 18:30:39 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/01 20:35:10 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,32 @@
 // Función auxiliar para verificar si un token es una redirección
 int is_redirection(char *token)
 {
-    return (ft_strncmp(token, ">", 1) == 0 || 
-            ft_strncmp(token, "<", 1) == 0 ||
-            ft_strncmp(token, ">>", 2) == 0 ||
-            ft_strncmp(token, "<<", 2) == 0);
+    return (ft_strncmp(token, ">", 2) == 0 || 
+            ft_strncmp(token, "<", 2) == 0 ||
+            ft_strncmp(token, ">>", 3) == 0 ||
+            ft_strncmp(token, "<<", 3) == 0);
 }
 
 
 // Función auxiliar para determinar el tipo de redirección
 void get_redir_info(char *token, int *mode, int *fd)
 {
-    if (ft_strncmp(token, ">>", 2) == 0)
+    if (ft_strncmp(token, ">>", 3) == 0)
     {
         *mode = O_WRONLY | O_CREAT | O_APPEND;
         *fd = 1;
     }
-    else if (ft_strncmp(token, ">", 1) == 0)
+    else if (ft_strncmp(token, ">", 2) == 0)
     {
         *mode = O_WRONLY | O_CREAT | O_TRUNC;
         *fd = 1;
     }
-    else if (ft_strncmp(token, "<<", 2) == 0)
+    else if (ft_strncmp(token, "<<", 3) == 0)
     {
         *mode = O_RDONLY;
         *fd = 0;
     }
-    else if (ft_strncmp(token, "<", 1) == 0)
+    else if (ft_strncmp(token, "<", 2) == 0)
     {
         *mode = O_RDONLY;
         *fd = 0;
@@ -52,8 +52,8 @@ void get_redir_info(char *token, int *mode, int *fd)
 void    ft_redir(t_redir **redir,char *file, int mode, int fd)
 {
     *redir = malloc(sizeof(t_redir));
-    if (!redir)
-        panic("malloc failed");
+    if (!*redir)
+        panic("malloc failed\n");
     (*redir)->file = ft_strdup(file);
     (*redir)->mode = mode;
     (*redir)->fd = fd;
@@ -68,7 +68,7 @@ t_exec  *initialize_exec(void)
 
 	exec = malloc(sizeof(t_exec));
 	if (!exec)
-		panic("malloc failed");
+		panic("malloc failed\n");
 
 	j = 0;
 	while (j < MAXARGS)
@@ -115,7 +115,7 @@ void handle_redirection(t_tree **current, char **token, int *i)
 
 	(*i)++;
 	if (!token[*i])
-		panic("Falta archivo después de redirección");
+		panic("missing file after redirection\n");
 	get_redir_info(token[*i - 1], &mode, &fd);
 	ft_redir(&redir, token[*i], mode, fd);
 	redir_node = create_tree_node((void *)redir, "REDIR");
@@ -138,7 +138,7 @@ t_tree  *parseexec_tree(char *input)
 	token = ft_token(input);
 	if (!token)
 	{
-		perror("Error de token\n");
+		write(2,"token failed\n",14);
 		return (NULL);
 	}
 
