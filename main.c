@@ -29,7 +29,7 @@ t_data	*init_data()
 
 
 
-int main(void)
+/* int main(void)
 {
     t_data *data;
 
@@ -64,7 +64,7 @@ int main(void)
     rl_clear_history(); 
     free(data);
     return 0;
-}
+} */
 
 
 /*
