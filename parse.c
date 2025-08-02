@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/01 20:35:10 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/02 17:16:43 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,20 +130,22 @@ t_tree  *parseexec_tree(char *input)
 	char    **token;
 	t_exec  *exec;
 	t_tree  *root_exec;
+	char **token_expan;
 
 	exec = initialize_exec();
 	if (!exec)
 		return (NULL);
 
 	token = ft_token(input);
+	
 	if (!token)
 	{
 		write(2,"token failed\n",14);
 		return (NULL);
 	}
-
-	root_exec = build_exec_tree(exec, token);
-	free_split(&token, count_split(token));
+	token_expan = expand_vars(token);
+	root_exec = build_exec_tree(exec, token_expan);
+	//free_split(&token, count_split(token));
 	
 	return (root_exec);
 }

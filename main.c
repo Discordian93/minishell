@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/01 19:53:17 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/02 17:04:45 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_data	*init_data()
 
 
 
-/* int main(void)
+int main(void)
 {
     t_data *data;
 
@@ -64,7 +64,7 @@ t_data	*init_data()
     rl_clear_history(); 
     free(data);
     return 0;
-} */
+} 
 
 
 /*

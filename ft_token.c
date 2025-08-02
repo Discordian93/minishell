@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_token.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/26 23:50:49 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/02 17:04:21 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ void expand_var(char **token, char **result)
     if (!varname)
         exit(1);
     *varname = '\0';
-    printf("DEBUG: Building variable name...\n");
+    //printf("DEBUG: Building variable name...\n");
     while (ft_isalnum(**token) || **token == '_')
     {
         c[0] = **token;
@@ -228,9 +228,9 @@ void expand_var(char **token, char **result)
         append(&varname, c);
         (*token)++;
     }
-    printf("DEBUG: Variable name: '%s'\n", varname);
+    //printf("DEBUG: Variable name: '%s'\n", varname);
     varval = getenv(varname);
-    printf("DEBUG: Variable value: '%s'\n", varval ? varval : "(null)");
+    //printf("DEBUG: Variable value: '%s'\n", varval ? varval : "(null)");
     if (varval)
         append(result, varval);
     free(varname);
@@ -253,7 +253,7 @@ void expand_quoted(char **token, char **result)
             c[1] = '\0';
             append(result, c);
             (*token)++;
-            printf("avanza...\n");
+            //printf("avanza...\n");
         }
     }
     (*token)++;
@@ -268,10 +268,10 @@ char *expand_token(char *token)
     if (!result)
         return (NULL);
     *result = '\0';
-    printf("DEBUG: expand_token starting with: '%s'\n", token);
+    //printf("DEBUG: expand_token starting with: '%s'\n", token);
     while(*token)
     {
-        printf("DEBUG: Current char: '%c'\n", *token);
+        //printf("DEBUG: Current char: '%c'\n", *token);
         if (*token != '\'' && *token != '"' && *token != '$')
         {
             c[0] = *token;
@@ -284,7 +284,7 @@ char *expand_token(char *token)
         else if (*token == '$')
             expand_var(&token, &result);
     }
-    printf("DEBUG: expand_token result: '%s'\n", result);
+    //printf("DEBUG: expand_token result: '%s'\n", result);
     return (result);
 }
 
@@ -312,7 +312,7 @@ char    **expand_vars(char **tokens)
 
 
 
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 
 
@@ -377,5 +377,4 @@ int main(void)
         }
     }
 
-    return 0;
-}
+    */

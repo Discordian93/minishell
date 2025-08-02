@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/07/31 11:31:00 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/02 17:11:52 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,4 +110,6 @@ void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2]);
 void	run_pipe_child_right(t_tree *tree, t_data *data, int fd[2]);
 void	run_pipe(t_tree *tree, t_data *data);
 void	runcmd(t_tree *tree, t_data *data);
+char    **expand_vars(char **tokens);
+char    *expand_token(char *token);
 #endif
