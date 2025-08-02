@@ -31,16 +31,12 @@ char	**initialize_environ(char **env)
 	return (myenv);
 }
 
-char **my_getenv(char *key, char **env)
+char	*my_getenv(char *key, char **env)
 {
 	size_t	i;
 	size_t	j;
 	char	*split;
-	char	**val;
 
-	val = malloc(sizeof(char*));
-	if (!val)
-		return (NULL);
 	i = 0;
 	while (env[i])
 		i++;
@@ -54,8 +50,7 @@ char **my_getenv(char *key, char **env)
 			if (ft_strncmp(key, env[j], ft_strlen(key)) == 0 && ft_strlen(env[j]) == ft_strlen(key))
 			{	
 				*split = '=';
-				*val = (split + 1);
-				return (val);
+				return(split + 1);
 			}
 			*split = '=';
 		}
@@ -88,7 +83,7 @@ char **my_getenv(char *key, char **env)
 		return (NULL);
 } */
 
-char	**handle_environ(char *key, size_t op)
+void	*handle_environ(char *key, size_t op)
 {
 	static size_t	initialized = 0;
 	static char**	my_environ = NULL;
@@ -102,28 +97,19 @@ char	**handle_environ(char *key, size_t op)
 		initialized = 1;
 	}
 	if (op == 1)
-		return (my_getenv(key, my_environ));
+		return ((char *) my_getenv(key, my_environ));
 	else if (op == 3)
-		return (my_environ);
+		return ((char **) my_environ);
 	else
 		return (NULL);
 }
 
 char	*ft_getenv(char *key)
 {	
-	char	**val;
-	char	*result;
-
-	 val = handle_environ(key,  1);
-	 if (val)
-	 	result = *val;
-	else
-		result = NULL;
-	free(val);
-	return (result);
+	return ((char *)handle_environ(key, 1));
 }
 
 char	**env(void)
 {
-	return (handle_environ(NULL, 3));
+	return ((char **) handle_environ(NULL, 3));
 }

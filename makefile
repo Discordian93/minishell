@@ -15,7 +15,7 @@
 NAME = minishell
 
 # Archivos objeto
-OBJS = ft_token.o main.o parse.o util.o sh.o bultins.o tools.o runcmd.o
+OBJS = ft_token.o main.o parse.o util.o sh.o bultins.o tools.o runcmd.o environ.o
 
 # Flags de compilación: incluye depuración (-g)
 CFLAGS = -Wall -Wextra -Werror -g -I./

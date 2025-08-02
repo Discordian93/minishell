@@ -110,4 +110,7 @@ void	run_pipe(t_tree *tree, t_data *data);
 void	runcmd(t_tree *tree, t_data *data);
 char    **expand_vars(char **tokens);
 char    *expand_token(char *token);
+char	**env(void);
+char	*ft_getenv(char *key);
+char	*ft_strndup(char *str, size_t n);
 #endif

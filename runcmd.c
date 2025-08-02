@@ -58,14 +58,14 @@ void	execute_external_command(t_exec *exec)
 {
 	char		*path;
 	char		path_buf[PATH_MAX];
-	extern char	**environ;
+	//extern char	**environ;
 
 	path = get_command_path(exec->argv[0]);
 	if (!path)
 		panic("command not found\n");
 	ft_strlcpy(path_buf, path, sizeof(path_buf));
 	free(path);
-	execve(path_buf, exec->argv, environ);
+	execve(path_buf, exec->argv, env());
 	panic("execve failed\n");
 }
 
