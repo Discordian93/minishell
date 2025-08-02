@@ -214,12 +214,13 @@ void expand_var(char **token, char **result)
     char    *varname;
     char    *varval;
     char c[2];
-
+    
     (*token)++;
     varname = malloc(1);
     if (!varname)
         exit(1);
     *varname = '\0';
+    printf("DEBUG: Building variable name...\n");
     while (ft_isalnum(**token) || **token == '_')
     {
         c[0] = **token;
@@ -227,10 +228,12 @@ void expand_var(char **token, char **result)
         append(&varname, c);
         (*token)++;
     }
+    printf("DEBUG: Variable name: '%s'\n", varname);
     varval = getenv(varname);
-    free(varname);
+    printf("DEBUG: Variable value: '%s'\n", varval ? varval : "(null)");
     if (varval)
-		append(result, varval);
+        append(result, varval);
+    free(varname);
 }
 
 void expand_quoted(char **token, char **result)
@@ -260,13 +263,15 @@ char *expand_token(char *token)
 {
     char    *result;
     char    c[2];
-
+    
     result = malloc(1);
     if (!result)
         return (NULL);
     *result = '\0';
+    printf("DEBUG: expand_token starting with: '%s'\n", token);
     while(*token)
     {
+        printf("DEBUG: Current char: '%c'\n", *token);
         if (*token != '\'' && *token != '"' && *token != '$')
         {
             c[0] = *token;
@@ -279,6 +284,7 @@ char *expand_token(char *token)
         else if (*token == '$')
             expand_var(&token, &result);
     }
+    printf("DEBUG: expand_token result: '%s'\n", result);
     return (result);
 }
 
@@ -344,7 +350,7 @@ int main(void)
         "'Esto  es una \"prueba\" comillas simples'",
         "cd ./home .. .",
         "hola\"$PATH\"'$USER'",
-        "\"que tal '$SALUDO'\"",
+        "echo \"que tal '$SALUDO'\"",
         NULL
     };
 
