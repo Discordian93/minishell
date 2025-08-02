@@ -3,127 +3,108 @@
 /*                                                        :::      ::::::::   */
 /*   ft_token.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 17:04:21 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/02 19:49:36 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Salta los espacios, tabulaciones y saltos de línea en la cadena.
-// Devuelve el índice del primer carácter no separador.
-int skip_separators(const char *s, int i)
-{
-    while ((s[i] == ' ' || s[i] == '\t' || s[i] == '\n') && s[i] != '\0')
-        i++;
-    return i;
-}
-
-// Avanza el índice hasta el final de la palabra entre comillas.
-// Devuelve el índice después de la comilla de cierre o -1 si no está balanceada.
-int skip_quoted_word(const char *s, int i)
-{
-    char start_quote = s[i++];
-    while (s[i] != start_quote && s[i] != '\0')
-        i++;
-    if (s[i] == '\0')
-        return (-1);
-    return (i + 1);
-}
-
-// Avanza el índice hasta el final de la palabra sin comillas.
-// Devuelve el índice del primer separador o fin de cadena.
-int skip_unquoted_word(const char *s, int i)
-{
-    while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
-        i++;
-    return (i);
-}
-
-// Cuenta cuántas palabras hay en la cadena,
-// considerando como separadores: espacio, tabulación y salto de línea.
-// También verifica que las comillas estén balanceadas.
+// Cuenta cuántas palabras hay en la cadena considerando comillas como agrupadores
+// Si hay una comilla sin cerrar, devuelve -1 para evitar errores posteriores
 int count_words(const char *s)
 {
     int words = 0;
     int i = 0;
-    int next;
 
     while (s[i] != '\0')
     {
-        i = skip_separators(s, i);
-
+        // Saltar espacios iniciales
+        while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n')
+            i++;
         if (s[i] != '\0')
         {
             words++;
-            if (s[i] == '\'' || s[i] == '\"')
+            // Avanzar sobre la palabra actual
+            while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
             {
-                next = skip_quoted_word(s, i);
-                if (next == -1)
-                    return -1;
-                i = next;
-            }
-            else
-            {
-                i = skip_unquoted_word(s, i);
+                // Si encuentra una comilla, buscar la de cierre
+                if (s[i] == '"' || s[i] == '\'')
+                {
+                    char quote = s[i++];
+                    while (s[i] != quote && s[i] != '\0')
+                        i++;
+                    if (s[i] == '\0')
+                        return -1; // comilla sin cerrar
+                }
+                if (s[i] != '\0')
+                    i++;
             }
         }
     }
-
-    return (words);
+    return words;
 }
+/*
+// Libera los tokens previamente reservados hasta el índice dado
+void free_split(char ***s, int index)
+{
+    int i = 0;
+    while (i < index)
+        free((*s)[i++]);
+    free(*s);
+    *s = NULL;
+}*/
 
-
-// Split de entrada considerando comillas simples y dobles
+// Divide una cadena en tokens respetando comillas y espacios
 char **ft_token(const char *str)
 {
     int i = 0, j, size, len;
     char **s;
 
     if (!str)
-        return (NULL);
+        return NULL;
 
     len = count_words(str);
-    if (len == -1)
-        return (NULL);
+    if (len <= 0)
+        return NULL;
 
-    s = (char **)malloc((len + 1) * sizeof(char *));
+    s = malloc((len + 1) * sizeof(char *));
     if (!s)
-        return (NULL);
+        return NULL;
 
     while (i < len)
     {
-        while ((*str == ' ' || *str == '\t' || *str == '\n') && *str != '\0')
+        // Saltar espacios antes del token
+        while (*str == ' ' || *str == '\t' || *str == '\n')
             str++;
 
         size = 0;
-        if (*str == '\'')
+        // Medir tamaño del token respetando comillas internas
+        while (str[size] && str[size] != ' ' && str[size] != '\t' && str[size] != '\n')
         {
-            str++;
-            while (str[size] != '\'' && str[size] != '\0')
-                size++;
-        }
-        else if (*str == '"')
-        {
-            str++;
-            while (str[size] != '"' && str[size] != '\0')
-                size++;
-        }
-        else
-        {
-            while (str[size] != ' ' && str[size] != '\t' && str[size] != '\n' && str[size] != '\0')
+            if (str[size] == '"' || str[size] == '\'')
+            {
+                char quote = str[size++];
+                while (str[size] != quote && str[size] != '\0')
+                    size++;
+                if (str[size] == quote)
+                    size++;
+            }
+            else
                 size++;
         }
 
-        s[i] = (char *)malloc((size + 1) * sizeof(char));
+        // Reservar memoria para el token e incluir terminador nulo
+        s[i] = malloc(size + 1);
         if (!s[i])
         {
             free_split(&s, i);
-            return (NULL);
+            return NULL;
         }
 
+        // Copiar el contenido del token desde str
         j = 0;
         while (j < size)
         {
@@ -131,17 +112,14 @@ char **ft_token(const char *str)
             j++;
         }
         s[i][j] = '\0';
-
         str += size;
-        if (*str == '\'' || *str == '"')
-            str++;
-
         i++;
     }
-
     s[i] = NULL;
-    return (s);
+    return s;
 }
+
+
 
 char	*strjoin(char *s1, char *s2)
 {
@@ -194,7 +172,6 @@ char	*ft_strndup(char *str, size_t n)
 	dup[i] = '\0';
 	return (dup);
 }
-
 void	append(char **s1, char *s2)
 {
 	char	*appended;

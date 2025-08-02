@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 17:11:52 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/02 19:47:08 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,7 @@ typedef struct s_redir
 
 
 
-int     skip_separators(const char *s, int i);
-int     skip_quoted_word(const char *s, int i);
-int     skip_unquoted_word(const char *s, int i);
+
 int     count_words(const char *s);
 t_tree	*create_tree_node(void *obj, char *label);
 void	free_tree(t_tree *root);

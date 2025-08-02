@@ -1,180 +1,171 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_antiguo.c                                    :+:      :+:    :+:   */
+/*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 11:27:09 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/02 18:44:40 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/02 19:37:36 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "minishell.h"
-//#include "minishell.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h> // para print_tokens
 
-// Cuenta cuántas palabras hay en la cadena,
-// considerando como separadores: espacio, tabulación y salto de línea.
+// Cuenta cuántas palabras hay en la cadena considerando comillas como agrupadores
+// Si hay una comilla sin cerrar, devuelve -1 para evitar errores posteriores
 int count_words(char *s)
 {
     int words = 0;
     int i = 0;
 
     while (s[i] != '\0')
-    {    
-        // Saltar espacios o separadores
-        while ((s[i] == ' ' || s[i] == '\t' || s[i] == '\n') && s[i] != '\0' && s[i] != '\'')
+    {
+        // Saltar espacios iniciales
+        while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n')
             i++;
-        // Si encontramos una palabra, la contamos
         if (s[i] != '\0')
         {
-            if (s[i] == '\'')
+            words++;
+            // Avanzar sobre la palabra actual
+            while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
             {
-                words++;
-                i++;
-                while (s[i] != '\'' && s[i] != '\0')
-                    i++;
-                if (s[i] == '\0')
-                    return (-1); // comilla sin cerrar
-                else
-                    i++;
-            }
-            else if (s[i] == '"')
-            {
-                words++;
-                i++;
-                while (s[i] != '"' && s[i] != '\0')
-                    i++;
-                if (s[i] == '\0')
-                    return (-1); // comilla sin cerrar
-                else
-                    i++;
-            }
-            else
-            {
-                words++;
-                while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
+                // Si encuentra una comilla, buscar la de cierre
+                if (s[i] == '"' || s[i] == '\'')
+                {
+                    char quote = s[i++];
+                    while (s[i] != quote && s[i] != '\0')
+                        i++;
+                    if (s[i] == '\0')
+                        return -1; // comilla sin cerrar
+                }
+                if (s[i] != '\0')
                     i++;
             }
         }
     }
-    return (words);
+    return words;
 }
 
-// Libera la memoria ya asignada si ocurre un error en medio del proceso
+// Libera los tokens previamente reservados hasta el índice dado
 void free_split(char ***s, int index)
 {
     int i = 0;
-    while (i < index) // liberamos solo lo que ya fue asignado
-    {
-        free((*s)[i]);
-        i++;
-    }
+    while (i < index)
+        free((*s)[i++]);
     free(*s);
     *s = NULL;
 }
 
-// Funcíon principal que hace el split por espacios, tabs o saltos de línea
+// Divide una cadena en tokens respetando comillas y espacios
 char **ft_token(char *str)
 {
     int i = 0, j, size, len;
     char **s;
 
     if (!str)
-        return (NULL);
+        return NULL;
 
     len = count_words(str);
-    if (len == -1)
-        return (NULL); // comilla sin cerrar
+    if (len <= 0)
+        return NULL;
 
-    s = (char **)malloc((len + 1) * sizeof(char *)); // +1 para el NULL final
+    s = malloc((len + 1) * sizeof(char *));
     if (!s)
-        return (NULL);
+        return NULL;
 
     while (i < len)
     {
-        // Saltar separadores
-        while ((*str == ' ' || *str == '\t' || *str == '\n') && *str != '\0' && *str != '\'')
+        // Saltar espacios antes del token
+        while (*str == ' ' || *str == '\t' || *str == '\n')
             str++;
 
-        // Calcular el tamaño de la palabra actual
         size = 0;
-        if (*str == '\'')
+        // Medir tamaño del token respetando comillas internas
+        while (str[size] && str[size] != ' ' && str[size] != '\t' && str[size] != '\n')
         {
-            size++; // saltar la comilla de apertura
-            while(str[size] != '\'' && str[size] != '\0')
-                size++;
-            if (str[size] == '\'')
-                size++;
-        }
-        else if (*str == '"')
-        {
-            size++;
-            while (str[size] != '"' && str[size] != '\0')
-                size++;
-            if(str[size] == '"')
-                size++;
-        }
-        else
-        {
-            while (str[size] != ' ' && str[size] != '\t' &&
-                str[size] != '\n' && str[size] != '\0')
+            if (str[size] == '"' || str[size] == '\'')
+            {
+                char quote = str[size++];
+                while (str[size] != quote && str[size] != '\0')
+                    size++;
+                if (str[size] == quote)
+                    size++;
+            }
+            else
                 size++;
         }
 
-        // Reservar espacio para la palabra + '\0'
-        s[i] = (char *)malloc((size + 1) * sizeof(char));
+        // Reservar memoria para el token e incluir terminador nulo
+        s[i] = malloc(size + 1);
         if (!s[i])
         {
-            free_split(&s, i); // liberamos hasta i - 1 con i < index
-            return (NULL);
+            free_split(&s, i);
+            return NULL;
         }
 
-        // Copiar la palabra
+        // Copiar el contenido del token desde str
         j = 0;
         while (j < size)
         {
             s[i][j] = str[j];
             j++;
         }
-        s[i][j] = '\0'; // terminador de string
-
-        // Avanzar el puntero en str para seguir procesando
+        s[i][j] = '\0';
         str += size;
-        /*if (*str == '\'' || *str == '"')
-            str++; */
-    }
-
-    s[i] = NULL; // último elemento del array es NULL
-    return (s);
-}
-
-
-
-#include <stdio.h>
-
-
-int main(void)
-{
-    char *test = "echo \"hola $USER\" > txt";
-    char **result = ft_token(test);
-
-    if (!result)
-    {
-        printf("Error en ft_split\n");
-        return (1);
-    }
-
-    int i = 0;
-    while (result[i])
-    {
-        printf("Palabra %d: \"%s\"\n", i + 1, result[i]);
         i++;
     }
+    s[i] = NULL;
+    return s;
+}
 
-    // Usamos tu función personalizada para liberar memoria
-    free_split(&result, i);
+// Imprime los tokens obtenidos por ft_token
+void print_tokens(char **tokens)
+{
+    int i = 0;
+    if (!tokens)
+    {
+        printf("(null)\n");
+        return;
+    }
+    while (tokens[i])
+    {
+        printf("token[%d]: %s\n", i, tokens[i]);
+        i++;
+    }
+}
 
-    return (0);
+// Main para probar ft_token con varios inputs
+int main(void)
+{
+    // Casos de prueba con comillas, redirecciones y errores
+    char *tests[] = {
+        "echo hola mundo",
+        "echo 'hola mundo'",
+        "echo \"hola mundo\"",
+        "ls -l | grep main > salida.txt",
+        "'comilla simple' y \"comilla doble\"",
+        "sin cerrar \"comilla",
+        "q\"$PATH hola\"",
+        NULL
+    };
+
+    int i = 0;
+    while (tests[i])
+    {
+        printf("\nTest %d: %s\n", i + 1, tests[i]);
+        char **tokens = ft_token(tests[i]);
+        print_tokens(tokens);
+        if (tokens)
+        {
+            int j = 0;
+            while (tokens[j])
+                free(tokens[j++]);
+            free(tokens);
+        }
+        i++;
+    }
+    return 0;
 }
