@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 19:49:36 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/03 17:25:59 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,7 @@ int count_words(const char *s)
     }
     return words;
 }
-/*
-// Libera los tokens previamente reservados hasta el índice dado
-void free_split(char ***s, int index)
-{
-    int i = 0;
-    while (i < index)
-        free((*s)[i++]);
-    free(*s);
-    *s = NULL;
-}*/
+
 
 // Divide una cadena en tokens respetando comillas y espacios
 char **ft_token(const char *str)
@@ -120,35 +111,6 @@ char **ft_token(const char *str)
 }
 
 
-
-char	*strjoin(char *s1, char *s2)
-{
-	size_t		len1;
-	size_t		len2;
-	char	*joined;
-	size_t	i;
-
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	joined = malloc(len1 + len2 + 1);
-	if (!joined)
-		return (NULL);
-	i = 0;
-	while (i < len1)
-	{
-            joined[i] = s1[i];
-            i++;
-    }
-	i = 0;
-	while (i < len2)
-	{
-        joined[i + len1] = s2[i];
-        i++;
-    }
-	joined[len1 + len2] = '\0';
-	return (joined);
-}
-
 char	*ft_strndup(char *str, size_t n)
 {
 	char	*dup;
@@ -172,142 +134,9 @@ char	*ft_strndup(char *str, size_t n)
 	dup[i] = '\0';
 	return (dup);
 }
-void	append(char **s1, char *s2)
-{
-	char	*appended;
-
-	appended = strjoin(*s1, s2);
-	if (appended)
-	{
-		free(*s1);
-		*s1 = appended;
-	}
-	else
-		exit(1);
-}
-
-void expand_var(char **token, char **result)
-{
-    char    *varname;
-    char    *varval;
-    char c[2];
-    
-    (*token)++;
-    varname = malloc(1);
-    if (!varname)
-        exit(1);
-    *varname = '\0';
-    //printf("DEBUG: Building variable name...\n");
-    while (ft_isalnum(**token) || **token == '_')
-    {
-        c[0] = **token;
-        c[1] = '\0';
-        append(&varname, c);
-        (*token)++;
-    }
-    //printf("DEBUG: Variable name: '%s'\n", varname);
-    varval = getenv(varname);
-    //printf("DEBUG: Variable value: '%s'\n", varval ? varval : "(null)");
-    if (varval)
-        append(result, varval);
-    free(varname);
-}
-
-void expand_quoted(char **token, char **result)
-{
-    char    quote;
-    char    c[2];
-
-    quote = **token;
-    (*token)++;
-    while (**token != quote)
-    {
-        if (quote == '"' && **token == '$')
-            expand_var(token, result);
-        else
-        {
-            c[0] = **token;
-            c[1] = '\0';
-            append(result, c);
-            (*token)++;
-            //printf("avanza...\n");
-        }
-    }
-    (*token)++;
-}
-
-char *expand_token(char *token)
-{
-    char    *result;
-    char    c[2];
-    
-    result = malloc(1);
-    if (!result)
-        return (NULL);
-    *result = '\0';
-    //printf("DEBUG: expand_token starting with: '%s'\n", token);
-    while(*token)
-    {
-        //printf("DEBUG: Current char: '%c'\n", *token);
-        if (*token != '\'' && *token != '"' && *token != '$')
-        {
-            c[0] = *token;
-            c[1] = '\0';
-            append(&result, c);
-            token++;
-        }
-        else if (*token == '\'' || *token == '"')
-            expand_quoted(&token, &result);
-        else if (*token == '$')
-            expand_var(&token, &result);
-    }
-    //printf("DEBUG: expand_token result: '%s'\n", result);
-    return (result);
-}
-
-char    **expand_vars(char **tokens)
-{   
-    char    **expanded;
-    int     i;
-    int     j;
-
-    i = 0;
-    while (tokens && tokens[i])
-        i++;
-    expanded = malloc(sizeof(char*) * (i +1));
-    if (!expanded)
-        return (NULL);
-    j = 0;
-    while (j < i)
-    {
-        expanded[j] = expand_token(tokens[j]);
-        j++;
-    }
-    expanded[j] = NULL;
-    return (expanded);
-}
 
 
-
-/*#include <stdio.h>
-#include <stdlib.h>
-
-
-void print_tokens(char **tokens)
-{
-    int i = 0;
-    if (!tokens)
-    {
-        printf("NULL (Error de comillas)\n");
-        return;
-    }
-    while (tokens[i])
-    {
-        printf("Token %d: [%s]\n", i, tokens[i]);
-        i++;
-    }
-}
-
+/*
 
 
 int main(void)
@@ -330,28 +159,5 @@ int main(void)
         "echo \"que tal '$SALUDO'\"",
         NULL
     };
-
-    char **expanded;
-
-    for (int i = 0; tests[i]; i++)
-    {
-        printf("\n==============================\n");
-        printf("Prueba %d: %s\n", i + 1, tests[i]);
-        printf("------------------------------\n");
-        char **tokens = ft_token(tests[i]);
-        print_tokens(tokens);
-        expanded = expand_vars(tokens);
-        printf("expandidas: \n");
-        print_tokens(expanded); 
-        // Liberar memoria
-        if (tokens)
-        {
-            for (int j = 0; tokens[j]; j++)
-               { free(tokens[j]);
-                free(expanded[j]);
-                }
-            free(tokens);
-        }
-    }
-
+}
     */

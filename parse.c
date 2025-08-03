@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/02 20:01:03 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/03 18:13:58 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,16 @@ t_tree  *build_exec_tree(t_exec *exec, char **token)
 	while (token[i] != NULL)
 	{
 		if (is_redirection(token[i]))
-			handle_redirection(&current, token, &i);
+		{
+			if(handle_redirection(&current, token, &i) < 0)
+			{
+
+				free_split(&token, i);
+				return (NULL);
+			}
+				
+		}
+			
 		else
 			exec->argv[j++] = ft_strdup(token[i]);
 		i++;
@@ -106,7 +115,7 @@ t_tree  *build_exec_tree(t_exec *exec, char **token)
 }
 
 // Maneja las redirecciones encontradas en los tokens y actualiza el árbol de ejecución.
-void handle_redirection(t_tree **current, char **token, int *i)
+int	handle_redirection(t_tree **current, char **token, int *i)
 {
 	t_redir *redir;
 	t_tree  *redir_node;
@@ -115,12 +124,18 @@ void handle_redirection(t_tree **current, char **token, int *i)
 
 	(*i)++;
 	if (!token[*i])
-		panic("missing file after redirection\n");
+	{
+		write(2,"missing file after redirection\n", 32);
+		return (-1);
+	}
+		
+
 	get_redir_info(token[*i - 1], &mode, &fd);
 	ft_redir(&redir, token[*i], mode, fd);
 	redir_node = create_tree_node((void *)redir, "REDIR");
 	(*current)->left = redir_node;
 	*current = redir_node;
+	return (0);
 }
 
 // Parsea comandos simples con múltiples redirecciones encadenadas
@@ -146,7 +161,8 @@ t_tree  *parseexec_tree(char *input)
 	token_expan = expand_vars(token);
 	root_exec = build_exec_tree(exec, token_expan);
 	free_split(&token, count_split(token));
-	free_split(&token_expan, count_split(token_expan));
+	if (root_exec)
+		free_split(&token_expan, count_split(token));
 	return (root_exec);
 }
 
