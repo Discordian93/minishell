@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/03 17:54:54 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/04 23:07:27 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	get_redir_info(char *token, int *mode, int *fd);
 void    ft_redir(t_redir **redir,char *file, int mode, int fd);
 t_exec  *initialize_exec(void);
 t_tree  *build_exec_tree(t_exec *exec, char **token);
-int    handle_redirection(t_tree **current, char **token, int *i);
+void    handle_redirection(t_tree **current, char **token, int *i);
 t_tree	*parseexec_tree(char *input);
 char	**ft_token(const char *str);
 t_tree	*parsepipe_tree(char *input);
@@ -113,4 +113,6 @@ char    *expand_token(char *token);
 char	**env(void);
 char	*ft_getenv(char *key);
 char	*ft_strndup(char *str, size_t n);
+int     check_token(char *input);
+void	append(char **s1, char *s2);
 #endif
