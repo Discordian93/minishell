@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 11:24:30 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 15:35:32 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 20:58:08 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ char *strip_wrapping_quotes(const char *s)
 // Expansión ligera para heredoc: expande $VAR pero NO quita comillas
 char *expand_heredoc_line(char *line)
 {
+    char t[2];
     char *res = malloc(1);
     if (!res) return NULL;
     *res = '\0';
@@ -56,7 +57,8 @@ char *expand_heredoc_line(char *line)
             // Si NO hay nombre de variable válido detrás de '$', copiamos '$' tal cual
             if (!line[1] || !(ft_isalnum(line[1]) || line[1] == '_'))
             {
-                char t[2] = { *line, '\0' };
+                t[0] = *line;
+                t[1] = '\0';
                 append(&res, t);
                 line++;
                 continue;
@@ -66,7 +68,8 @@ char *expand_heredoc_line(char *line)
         }
         else
         {
-            char t[2] = { *line, '\0' };
+            t[0] = *line;
+            t[1] = '\0';
             append(&res, t);
             line++;
         }
@@ -102,10 +105,9 @@ int handle_heredoc(char *delim)
             free(line);
             break;
         }
-
+        /*si tiene comillas el delimitador, no hay expansion*/
         if (quoted_delim)
         {
-            // Delimitador citado → NO hay expansión: escribir tal cual
             write(pipefd[WRITE_END], line, ft_strlen(line));
             write(pipefd[WRITE_END], "\n", 1);
         }

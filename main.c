@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 11:50:45 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 23:45:42 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,75 +25,6 @@ t_data	*init_data()
     ft_memset(data->prompt, 0, sizeof(data->prompt));
 	return (data);
 
-}
-
-int check_token(char *input)
-{
-    char	**token;
-    int		i;
-	
-	token = ft_token(input);
-	if(!token)
-		return (0);
-	i = 0;
-	while(token[i] != NULL)
-	{
-		if (ft_strncmp(token[i], "<<", 2) == 0)
-		{
-			if (ft_strlen(token[i])!= 2)
-			{
-				free_split(&token, count_split(token));
-				return (0);
-			}
-		}
-		else if (ft_strncmp(token[i], ">", 1) == 0 || ft_strncmp(token[i], "<", 1) == 0)
-		{
-			if(ft_strlen(token[i]) != 1)
-			{
-				free_split(&token,count_split(token));
-				return (0);	
-			}
-				
-			if(!token[i + 1])
-			{
-				free_split(&token,count_split(token));
-				return (0);	
-			}
-
-		}
-		else if (ft_strncmp(token[i], ">>", 2) == 0)
-		{
-			if(ft_strlen(token[i]) != 2)
-			{
-				free_split(&token,count_split(token));
-				return (0);	
-			}
-				
-			if(!token[i + 1])
-			{
-				free_split(&token,count_split(token));
-				return (0);	
-			}
-
-		}
-		else if (ft_strncmp(token[i], "|", 1) == 0)
-		{
-			if(ft_strlen(token[i]) != 1)
-			{
-				free_split(&token,count_split(token));
-				return (0);	
-			}
-				
-			if(!token[i + 1] || !token[i - 1])
-			{
-				free_split(&token,count_split(token));
-				return (0);	
-			}
-		}
-		i++;
-	}
-	free_split(&token,count_split(token));
-	return (1);	
 }
 
 int main(void)
@@ -120,7 +51,7 @@ int main(void)
             add_history(data->input);
         data->tree = parsepipe_tree(data->input);
         if (!data->tree)
-            write(2, "parsing error\n", 15);
+            write(2, "faild token\n", 13);
         else
             runcmd(data->tree, data);
 

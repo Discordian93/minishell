@@ -6,7 +6,7 @@
 #    By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 23:01:13 by yuliano           #+#    #+#              #
-#    Updated: 2025/08/09 11:41:32 by yuliano          ###   ########.fr        #
+#    Updated: 2025/08/09 22:03:51 by yuliano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME = minishell
 
 # Archivos objeto
 OBJS = ft_token.o main.o parse.o util.o sh.o bultins.o clean.o \
-	runcmd.o environ.o expand.o heredoc.o
+	runcmd.o environ.o expand.o heredoc.o check_token.o
 
 # Flags de compilación: incluye depuración (-g)
 CFLAGS = -Wall -Wextra -Werror -g -I./

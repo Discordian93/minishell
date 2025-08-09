@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 15:37:31 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 23:44:07 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,17 @@
 # define READ_END 0
 # define WRITE_END 1
 # define MODE_HEREDOC 0x8000
+
+#ifndef EQ
+# define EQ(t,lit) (ft_strncmp((t), (lit), \
+    (int)ft_strlen(lit) + 1) == 0)
+#endif
+
+#ifndef IS_OP
+# define IS_OP(t)  (EQ((t),"|") || EQ((t),"<") \
+    || EQ((t),">") || EQ((t),"<<") || EQ((t),">>"))
+#endif
+
 
 // Estructura genérica de nodo del árbol
 typedef struct s_tree
