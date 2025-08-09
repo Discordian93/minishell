@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/04 23:07:27 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 15:37:31 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,7 @@
 # define MAXARGS 15
 # define READ_END 0
 # define WRITE_END 1
-
-
-
-typedef enum e_redir_type
-{
-    FILE_TRUNC,
-    FILE_APPEND,
-    FILE_IN,
-    HEREDOC
-} t_redir_type;
+# define MODE_HEREDOC 0x8000
 
 // Estructura genérica de nodo del árbol
 typedef struct s_tree
@@ -65,7 +56,6 @@ typedef struct s_exec
 
 typedef struct s_redir 
 {
-    t_redir_type   type;
     char *file;
     int mode;
     int fd;                          
@@ -115,4 +105,7 @@ char	*ft_getenv(char *key);
 char	*ft_strndup(char *str, size_t n);
 int     check_token(char *input);
 void	append(char **s1, char *s2);
+void expand_var(char **token, char **result);
+int     handle_heredoc(char *delim);
+int     is_in_quotation(char *deli);
 #endif

@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/04 23:00:08 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 14:16:20 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void get_redir_info(char *token, int *mode, int *fd)
     }
     else if (ft_strncmp(token, "<<", 3) == 0)
     {
-        *mode = O_RDONLY;
+        *mode = MODE_HEREDOC;
         *fd = 0;
     }
     else if (ft_strncmp(token, "<", 2) == 0)
@@ -98,7 +98,7 @@ t_tree  *build_exec_tree(t_exec *exec, char **token)
 		if (is_redirection(token[i]))
 			handle_redirection(&current, token, &i);
 		else
-			exec->argv[j++] = ft_strdup(token[i]);
+			exec->argv[j++] = expand_token(token[i]);
 		i++;
 	}
 
@@ -112,9 +112,24 @@ void	handle_redirection(t_tree **current, char **token, int *i)
 	t_tree  *redir_node;
 	int     mode;
 	int     fd;
+	char	*expanded_token;
+
 	get_redir_info(token[*i], &mode, &fd);
-	(*i)++;
-	ft_redir(&redir, token[*i], mode, fd);
+	if (ft_strncmp(token[*i], "<<", 3) == 0)
+	{
+		(*i)++;
+		ft_redir(&redir, token[*i], mode, fd);
+	}
+	else
+	{
+		(*i)++;
+		expanded_token = expand_token(token[*i]);
+		ft_redir(&redir, expanded_token, mode, fd);
+		free(expanded_token);
+		
+	}
+		
+	
 	redir_node = create_tree_node((void *)redir, "REDIR");
 	(*current)->left = redir_node;
 	*current = redir_node;
@@ -128,7 +143,6 @@ t_tree  *parseexec_tree(char *input)
 	char    **token;
 	t_exec  *exec;
 	t_tree  *root_exec;
-	char **token_expan;
 
 	exec = initialize_exec();
 	if (!exec)
@@ -137,10 +151,10 @@ t_tree  *parseexec_tree(char *input)
 	token = ft_token(input);
 	if (!token)
 		return (NULL);
-	token_expan = expand_vars(token);
-	root_exec = build_exec_tree(exec, token_expan);
+	
+	root_exec = build_exec_tree(exec, token);
 	free_split(&token, count_split(token));
-	free_split(&token_expan, count_split(token_expan));
+
 	return (root_exec);
 }
 

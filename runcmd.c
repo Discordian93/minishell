@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 20:09:34 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 11:40:04 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,10 @@ void	run_redir(t_tree *tree, t_data *data)
 	int		fd;
 
 	redir = (t_redir *)tree->obj;
-	fd = open(redir->file, redir->mode, 0644);
+	if (redir->mode & MODE_HEREDOC)
+		fd = handle_heredoc(redir->file);
+	else
+		fd = open(redir->file, redir->mode, 0644);
 	if (fd < 0)
 		panic("open failed\n");
 	if (dup2(fd, redir->fd) < 0)

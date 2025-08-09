@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/04 21:49:07 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/09 11:50:45 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,15 @@ int check_token(char *input)
 	i = 0;
 	while(token[i] != NULL)
 	{
-		if (ft_strncmp(token[i], ">", 1) == 0 || ft_strncmp(token[i], "<", 1) == 0)
+		if (ft_strncmp(token[i], "<<", 2) == 0)
+		{
+			if (ft_strlen(token[i])!= 2)
+			{
+				free_split(&token, count_split(token));
+				return (0);
+			}
+		}
+		else if (ft_strncmp(token[i], ">", 1) == 0 || ft_strncmp(token[i], "<", 1) == 0)
 		{
 			if(ft_strlen(token[i]) != 1)
 			{
@@ -76,7 +84,7 @@ int check_token(char *input)
 				return (0);	
 			}
 				
-			if(!token[i + 1])
+			if(!token[i + 1] || !token[i - 1])
 			{
 				free_split(&token,count_split(token));
 				return (0);	
