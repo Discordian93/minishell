@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 14:50:48 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:36:43 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,10 @@ char	*ft_getenv(char *key);
 char	*ft_strndup(char *str, size_t n);
 int     check_token(char *input);
 void	append(char **s1, char *s2);
-void expand_var(char **token, char **result);
+void    expand_var(char **token, char **result);
 int     handle_heredoc(char *delim);
 int     is_in_quotation(char *deli);
+void	export(char **s);
+void	add_to_environ(char ***envdir, char *key, char *value);
 //void    dbg(const char *msg, t_tree *n);
 #endif

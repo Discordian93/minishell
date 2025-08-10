@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 13:18:30 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:09:27 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void run_exec(t_tree *tree, t_data *data)
     {
         // Hijo: aplica redirecciones reales (dup2) y ejecuta
         runcmd(tree->left, data);
-        if (is_builtin_child(exec))
+        if (is_builtin_child(exec) && exec)
             execute_builtin_child(exec);
         else
             execute_external_command(exec);

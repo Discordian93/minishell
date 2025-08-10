@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:47:30 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/04 22:01:03 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/10 16:23:25 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void expand_var(char **token, char **result)
         (*token)++;
     }
     //printf("DEBUG: Variable name: '%s'\n", varname);
-    varval = getenv(varname);
+    varval = ft_getenv(varname);
     //printf("DEBUG: Variable value: '%s'\n", varval ? varval : "(null)");
     if (varval)
         append(result, varval);

@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:42:06 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 17:14:04 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:45:43 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int is_builtin_child(t_exec *exec)
 	if (ft_strncmp(exec->argv[0],"echo", 5) == 0)
 		return (1);
 	else if(ft_strncmp(exec->argv[0], "pwd", 4)  == 0)
+		return (1);
+	else if (ft_strncmp(exec->argv[0], "export", 7) == 0)
 		return (1);
 	else
 		return (0);
@@ -108,6 +110,10 @@ void execute_builtin_child(t_exec *exec)
 		ft_echo(exec->argv);
 	else if (ft_strncmp(exec->argv[0], "pwd", 4) == 0)
 		ft_pwd();
+	else if (ft_strncmp(exec->argv[0], "export", 7) == 0)
+	{
+		export(exec->argv);
+	}
 	exit(EXIT_SUCCESS);
 	// ... otros builtins
 }

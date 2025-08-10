@@ -157,8 +157,7 @@ void	my_setenv(char *key, char *value, char ***env)
 			*split = '\0';
 			if (ft_strncmp(key, environ[j], ft_strlen(key)) == 0 && 
 			    ft_strlen(environ[j]) == ft_strlen(key))
-			{	
-				*split = '=';
+			{
 				new_str = create_env_string(key, value);
 				if (!new_str)
 					exit(1);
@@ -323,4 +322,27 @@ void	ft_unsetenv(char *key)
 {	
 	handle_environ(key, NULL, 4);
 	return ;
+}
+
+void export_one(char *s)
+{
+	char	*split;
+	if (!s)
+		return ;
+	split = ft_strchr(s, '=');
+	if (!split)
+		return ;
+	*split = '\0';
+	ft_setenv(s, split + 1);
+	*split = '=';
+}
+
+void	export(char **s)
+{
+	s++;
+	while (*s)
+	{
+		export_one(*s);
+		s++;
+	}
 }
