@@ -346,3 +346,31 @@ void	export(char **s)
 		s++;
 	}
 }
+
+void	ft_env(void)
+{
+	char	**my_env;
+
+	my_env = env();
+	if (my_env)
+	{
+		while (*my_env)
+		{
+			printf("%s\n", *my_env);
+			my_env++;
+		}
+	}
+}
+
+void	ft_unset(char **args)
+{
+	if (args)
+	{
+		args++;
+		while (*args)
+		{
+			ft_unsetenv(*args);
+			args++;
+		}
+	}
+}
