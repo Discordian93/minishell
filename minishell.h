@@ -113,4 +113,5 @@ char    *expand_token(char *token);
 char	**env(void);
 char	*ft_getenv(char *key);
 char	*ft_strndup(char *str, size_t n);
+void	append(char **s1, char *s2);
 #endif
