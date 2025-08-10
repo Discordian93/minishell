@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 16:09:27 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/10 17:16:03 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ void run_exec(t_tree *tree, t_data *data)
     }
 
     // Builtins en el padre (los que alteran el estado del shell)
-    if (is_builtin_parents(exec) && exec != NULL)
-    {
-        ft_cd(exec->argv);
-        return ;
-    }
-
+    if (is_builtin_parents(exec) && exec)
+	{
+		execute_builtin_parents(exec);
+		return ;
+	}
+		
     // Resto: ejecutamos en hijo
     pid = fork();
     if (pid == -1)

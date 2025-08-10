@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 16:36:43 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/10 17:09:11 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,5 +121,6 @@ int     handle_heredoc(char *delim);
 int     is_in_quotation(char *deli);
 void	export(char **s);
 void	add_to_environ(char ***envdir, char *key, char *value);
+void	execute_builtin_parents(t_exec *exec);
 //void    dbg(const char *msg, t_tree *n);
 #endif

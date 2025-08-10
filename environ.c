@@ -281,7 +281,7 @@ void	*handle_environ(char *key, char *value, size_t op)
 		return (NULL);
 }
 
-/* void	*handle_environ(char *key, size_t op)
+/*void	*handle_environ(char *key, size_t op)
 {
 	static size_t	initialized = 0;
 	static char**	my_environ = NULL;
@@ -300,7 +300,7 @@ void	*handle_environ(char *key, char *value, size_t op)
 		return ((char **) my_environ);
 	else
 		return (NULL);
-} */
+}*/
 
 char	*ft_getenv(char *key)
 {	
