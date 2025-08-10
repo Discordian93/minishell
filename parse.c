@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/09 14:16:20 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/10 13:30:26 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,9 @@ t_tree  *build_exec_tree(t_exec *exec, char **token)
 	t_tree  *current;
 	int     i;
 	int		j;
-
+	
 	root_exec = create_tree_node((void *)exec, "EXEC");
 	current = root_exec;
-
 	i = 0;
 	j = 0;
 	while (token[i] != NULL)

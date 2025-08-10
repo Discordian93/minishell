@@ -3,29 +3,116 @@
 /*                                                        :::      ::::::::   */
 /*   runcmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 11:40:04 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/10 13:18:30 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
+
+
+#include "minishell.h"
+
+// -----------------------------------------------------------------------------
+// Modo bash: si la línea contiene SOLO redirecciones (p.ej. "> a"),
+// NO se ejecuta ningún comando ni se hace fork. Solo se aplican los efectos
+// colaterales: crear/truncar/validar archivos o consumir heredoc.
+// Esta función recorre la cadena de REDIR (node->left) y hace open/close o heredoc.
+// Devuelve 0 si todo OK, -1 si alguna redirección falla.
+// -----------------------------------------------------------------------------
+int	apply_redirs_only(t_tree *node)
+{
+    while (node && is_node_type(node, "REDIR"))
+    {
+		int hfd;
+		
+        t_redir *r = (t_redir *)node->obj;
+        if (r->mode & MODE_HEREDOC)
+        {
+            hfd = handle_heredoc(r->file); // consume heredoc
+            if (hfd < 0)
+                return -1;
+            close(hfd); // no se usa; solo validar/consumir
+        }
+        else
+        {
+            int fd = open(r->file, r->mode, 0644);
+            if (fd < 0)
+                return -1;
+            close(fd); // efecto: crear/truncar/validar
+        }
+        node = node->left; // siguiente redirección (más interna)
+    }
+    return 0;
+}
+
+
+// Ejecuta un EXEC: builtins en padre si procede; si no, fork + redirs + execve
+void run_exec(t_tree *tree, t_data *data)
+{
+    t_exec *exec;
+    pid_t   pid;
+	
+	exec = (t_exec *)tree-> obj;
+    // Caso especial: EXEC sin argv[0] (línea de SOLO redirecciones: "> a")
+    if (!exec || !exec->argv[0])
+    {
+        if (apply_redirs_only(tree->left) < 0)
+            perror("redirection");
+        return ; // sin fork ni exec
+    }
+
+    // Builtins en el padre (los que alteran el estado del shell)
+    if (is_builtin_parents(exec) && exec != NULL)
+    {
+        ft_cd(exec->argv);
+        return ;
+    }
+
+    // Resto: ejecutamos en hijo
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork failed");
+        return;
+    }
+    if (pid == 0)
+    {
+        // Hijo: aplica redirecciones reales (dup2) y ejecuta
+        runcmd(tree->left, data);
+        if (is_builtin_child(exec))
+            execute_builtin_child(exec);
+        else
+            execute_external_command(exec);
+    }
+    else
+    {
+        waitpid(pid, NULL, 0);
+    }
+}
 /*
  * Ejecuta un nodo de tipo EXEC.
  * Si el comando es un built-in, lo ejecuta directamente en el proceso actual.
  * Si no, crea un proceso hijo para ejecutar el comando externo usando execve.
  * Esta función maneja la ejecución de comandos simples en el minishell.
  */
+
+/*
 void	run_exec(t_tree *tree, t_data *data)
 {
 	t_exec	*exec;
 	pid_t	pid;
-
-	exec = (t_exec *)tree->obj;
+	
+	//si no es NULL, hacemos casting: caso parse > a
+	if (tree ->obj)
+		exec = (t_exec *)tree->obj;
 	if (is_builtin_parents(exec))
 		ft_cd(exec->argv);
+	
 	else
 	{
 		pid = fork();
@@ -34,6 +121,7 @@ void	run_exec(t_tree *tree, t_data *data)
 			perror("fork failed\n");
 			return ;
 		}
+		//creo que el problema es que no entra  la proceso hijo
 		if (pid == 0)
 		{
 			runcmd(tree->left, data);
@@ -41,13 +129,15 @@ void	run_exec(t_tree *tree, t_data *data)
 				execute_builtin_child(exec);
 			else
 				execute_external_command(exec);
+			//termina el proceso hijo: caso parse > a
+			exit(1);
 		}
 		if (pid > 0)
 			waitpid(pid, NULL, 0);
 	}
 }
 
-
+*/
 
 /*
  * Ejecuta un comando externo en el proceso hijo.
