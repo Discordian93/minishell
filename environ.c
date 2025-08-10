@@ -210,7 +210,7 @@ char	**copy_environ_except(char **env, size_t skip_index)
 	char	**new_env;
 	
 	count = count_environ(env);
-	new_env = malloc(sizeof(char*) * count);  // count instead of count+1 since removing one
+	new_env = malloc(sizeof(char*) * count);
 	if (!new_env)
 		return (NULL);
 	i = 0;
@@ -237,7 +237,7 @@ void	my_unsetenv(char *key, char ***env)
 	
 	index = find_env_index(key, *env);
 	if (index == -1)
-		return ;  // Key not found
+		return ;
 	new_env = copy_environ_except(*env, index);
 	if (!new_env)
 		exit(1);
@@ -308,7 +308,19 @@ char	*ft_getenv(char *key)
 	return ((char *) handle_environ(key, NULL, 1));
 }
 
+void	ft_setenv(char *key, char *value)
+{	
+	handle_environ(key, value, 2);
+	return ;
+}
+
 char	**env(void)
 {
 	return ((char **) handle_environ(NULL, NULL, 3));
+}
+
+void	ft_unsetenv(char *key)
+{	
+	handle_environ(key, NULL, 4);
+	return ;
 }
