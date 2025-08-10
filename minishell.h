@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 23:44:07 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/10 11:32:10 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 
 #ifndef EQ
 # define EQ(t,lit) (ft_strncmp((t), (lit), \
-    (int)ft_strlen(lit) + 1) == 0)
+    (int)ft_strlen(lit)) == 0)
 #endif
 
 #ifndef IS_OP

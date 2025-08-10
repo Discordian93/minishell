@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 23:45:42 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/10 11:34:09 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int main(void)
             add_history(data->input);
         data->tree = parsepipe_tree(data->input);
         if (!data->tree)
-            write(2, "faild token\n", 13);
+            write(2, "failed token\n", 13);
         else
             runcmd(data->tree, data);
 
