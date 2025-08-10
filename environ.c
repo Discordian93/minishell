@@ -1,15 +1,64 @@
-# include "minishell.h"
+#include "minishell.h"
 
+/* Auxiliary function to create a "KEY=VALUE" string */
+char	*create_env_string(char *key, char *value)
+{
+	char	*str;
+	
+	str = malloc(1);
+	if (!str)
+		return (NULL);
+	str[0] = '\0';
+	append(&str, key);
+	append(&str, "=");
+	append(&str, value);
+	return (str);
+}
+
+/* Auxiliary function to free an entire environment array */
+void	free_environ(char **env)
+{
+	size_t	i;
+	
+	if (!env)
+		return ;
+	i = 0;
+	while (env[i])
+		free(env[i++]);
+	free(env);
+}
+
+/* Auxiliary function to free partial environment (for error handling) */
+void	free_partial_environ(char **env, size_t count)
+{
+	size_t	i;
+	
+	if (!env)
+		return ;
+	i = 0;
+	while (i < count)
+		free(env[i++]);
+	free(env);
+}
+
+/* Auxiliary function to count environment variables */
+size_t	count_environ(char **env)
+{
+	size_t	i;
+	
+	i = 0;
+	while (env[i])
+		i++;
+	return (i);
+}
 
 char	**initialize_environ(char **env)
 {
 	size_t	i;
 	char	**myenv;
 	size_t	j;
-
-	i = 0;
-	while (env[i])
-		i++;
+	
+	i = count_environ(env);
 	myenv = malloc(sizeof(char*) * (i + 1));
 	if (!myenv)
 		return (NULL);
@@ -18,11 +67,8 @@ char	**initialize_environ(char **env)
 	{
 		myenv[j] = ft_strndup(env[j], ft_strlen(env[j]));
 		if (!myenv[j])
-		{	
-			i = 0;
-			while (i < j)
-				free(myenv[i++]);
-			free(myenv);
+		{
+			free_partial_environ(myenv, j);
 			return (NULL);
 		}
 		j++;
@@ -37,40 +83,31 @@ void	add_to_environ(char ***envdir, char *key, char *value)
 	char	**myenv;
 	char	**env;
 	size_t	j;
-
+	
 	env = *envdir;
-	i = 0;
-	while (env[i])
-		i++;
+	i = count_environ(env);
 	myenv = malloc(sizeof(char*) * (i + 2));
 	if (!myenv)
-		exit(1) ;
+		exit(1);
 	j = 0;
 	while (j < i)
 	{
 		myenv[j] = ft_strndup(env[j], ft_strlen(env[j]));
 		if (!myenv[j])
-		{	
-			i = 0;
-			while (i < j)
-				free(myenv[i++]);
-			free(myenv);
+		{
+			free_partial_environ(myenv, j);
 			return ;
 		}
 		j++;
 	}
-	myenv[j] = malloc(1);
-	if (!(myenv[j]))
+	myenv[j] = create_env_string(key, value);
+	if (!myenv[j])
+	{
+		free_partial_environ(myenv, j);
 		return ;
-	myenv[j][0] = '\0';
-	append(&(myenv[j]), key);
-	append(&(myenv[j]), "=");
-	append(&(myenv[j]), value);
-	myenv[j+1] = NULL;
-	i = 0;
-	while (i < j)
-		free(env[i++]);
-	free(env);
+	}
+	myenv[j + 1] = NULL;
+	free_environ(env);
 	*envdir = myenv;
 }
 
@@ -79,10 +116,8 @@ char	*my_getenv(char *key, char **env)
 	size_t	i;
 	size_t	j;
 	char	*split;
-
-	i = 0;
-	while (env[i])
-		i++;
+	
+	i = count_environ(env);
 	j = 0;
 	while (j < i)
 	{
@@ -90,10 +125,11 @@ char	*my_getenv(char *key, char **env)
 		if (split)
 		{
 			*split = '\0';
-			if (ft_strncmp(key, env[j], ft_strlen(key)) == 0 && ft_strlen(env[j]) == ft_strlen(key))
+			if (ft_strncmp(key, env[j], ft_strlen(key)) == 0 && 
+			    ft_strlen(env[j]) == ft_strlen(key))
 			{	
 				*split = '=';
-				return(split + 1);
+				return (split + 1);
 			}
 			*split = '=';
 		}
@@ -102,32 +138,32 @@ char	*my_getenv(char *key, char **env)
 	return (NULL);
 }
 
-void	my_setenv(char *key, char *value, char **env)
+void	my_setenv(char *key, char *value, char ***env)
 {
 	size_t	i;
 	size_t	j;
 	char	*split;
-
-	i = 0;
-	while (env[i])
-		i++;
+	char	**environ;
+	char	*new_str;
+	
+	environ = *env;
+	i = count_environ(environ);
 	j = 0;
 	while (j < i)
 	{
-		split = ft_strchr(env[j], '=');
+		split = ft_strchr(environ[j], '=');
 		if (split)
 		{
 			*split = '\0';
-			if (ft_strncmp(key, env[j], ft_strlen(key)) == 0 && ft_strlen(env[j]) == ft_strlen(key))
+			if (ft_strncmp(key, environ[j], ft_strlen(key)) == 0 && 
+			    ft_strlen(environ[j]) == ft_strlen(key))
 			{	
-				free(env[j]);
-				env[j] = malloc(1);
-				if (!env[j])
-					exit (1);
-				env[j][0] = '\0';
-				append(&(env[j]), key);
-				append(&(env[j]), "=");
-				append(&(env[j]), value);
+				*split = '=';
+				new_str = create_env_string(key, value);
+				if (!new_str)
+					exit(1);
+				free(environ[j]);
+				environ[j] = new_str;
 				return ;
 			}
 			else
@@ -135,21 +171,92 @@ void	my_setenv(char *key, char *value, char **env)
 		}
 		j++;
 	}
-	add_to_environ(&env, key, value);
+	add_to_environ(env, key, value);
 	return ;
+}
+
+/* Auxiliary function to find environment variable index */
+int	find_env_index(char *key, char **env)
+{
+	size_t	i;
+	char	*split;
+	
+	i = 0;
+	while (env[i])
+	{
+		split = ft_strchr(env[i], '=');
+		if (split)
+		{
+			*split = '\0';
+			if (ft_strncmp(key, env[i], ft_strlen(key)) == 0 && 
+			    ft_strlen(env[i]) == ft_strlen(key))
+			{
+				*split = '=';
+				return (i);
+			}
+			*split = '=';
+		}
+		i++;
+	}
+	return (-1);
+}
+
+/* Auxiliary function to copy environment excluding one index */
+char	**copy_environ_except(char **env, size_t skip_index)
+{
+	size_t	i;
+	size_t	j;
+	size_t	count;
+	char	**new_env;
+	
+	count = count_environ(env);
+	new_env = malloc(sizeof(char*) * count);  // count instead of count+1 since removing one
+	if (!new_env)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (env[i])
+	{
+		if (i != skip_index)
+		{
+			new_env[j] = ft_strndup(env[i], ft_strlen(env[i]));
+			if (!new_env[j])
+				return (free_partial_environ(new_env, j), NULL);
+			j++;
+		}
+		i++;
+	}
+	new_env[j] = NULL;
+	return (new_env);
+}
+
+void	my_unsetenv(char *key, char ***env)
+{
+	int		index;
+	char	**new_env;
+	
+	index = find_env_index(key, *env);
+	if (index == -1)
+		return ;  // Key not found
+	new_env = copy_environ_except(*env, index);
+	if (!new_env)
+		exit(1);
+	free_environ(*env);
+	*env = new_env;
 }
 
 /*
 	op 1 is getenv
 	op 2 is setenv
 	op 3 is getting entire env
+	op 4 is unsetenv
 */
 void	*handle_environ(char *key, char *value, size_t op)
 {
 	static size_t	initialized = 0;
 	static char**	my_environ = NULL;
 	extern char**	environ;
-
+	
 	if (initialized == 0)
 	{
 		my_environ = initialize_environ(environ);
@@ -161,11 +268,16 @@ void	*handle_environ(char *key, char *value, size_t op)
 		return (my_getenv(key, my_environ));
 	else if (op == 2)
 	{
-		my_setenv(key, value, my_environ);
+		my_setenv(key, value, &my_environ);
 		return (NULL);
 	}
 	else if (op == 3)
 		return ((char **) my_environ);
+	else if (op == 4)
+	{
+		my_unsetenv(key, &my_environ);
+		return (NULL);
+	}
 	else
 		return (NULL);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 19:47:08 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/10 11:32:10 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,18 @@
 # define MAXARGS 15
 # define READ_END 0
 # define WRITE_END 1
+# define MODE_HEREDOC 0x8000
 
+#ifndef EQ
+# define EQ(t,lit) (ft_strncmp((t), (lit), \
+    (int)ft_strlen(lit)) == 0)
+#endif
 
+#ifndef IS_OP
+# define IS_OP(t)  (EQ((t),"|") || EQ((t),"<") \
+    || EQ((t),">") || EQ((t),"<<") || EQ((t),">>"))
+#endif
 
-typedef enum e_redir_type
-{
-    FILE_TRUNC,
-    FILE_APPEND,
-    FILE_IN,
-    HEREDOC
-} t_redir_type;
 
 // Estructura genérica de nodo del árbol
 typedef struct s_tree
@@ -65,7 +67,6 @@ typedef struct s_exec
 
 typedef struct s_redir 
 {
-    t_redir_type   type;
     char *file;
     int mode;
     int fd;                          
@@ -113,5 +114,9 @@ char    *expand_token(char *token);
 char	**env(void);
 char	*ft_getenv(char *key);
 char	*ft_strndup(char *str, size_t n);
+int     check_token(char *input);
 void	append(char **s1, char *s2);
+void expand_var(char **token, char **result);
+int     handle_heredoc(char *delim);
+int     is_in_quotation(char *deli);
 #endif

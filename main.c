@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/02 17:04:45 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:34:09 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ t_data	*init_data()
 	return (data);
 
 }
-
-
 
 int main(void)
 {
@@ -53,7 +51,7 @@ int main(void)
             add_history(data->input);
         data->tree = parsepipe_tree(data->input);
         if (!data->tree)
-            write(2, "Error\n", 6);
+            write(2, "failed token\n", 13);
         else
             runcmd(data->tree, data);
 
