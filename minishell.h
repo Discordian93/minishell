@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 18:58:57 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/12 21:59:24 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,5 +125,10 @@ void	execute_builtin_parents(t_exec *exec);
 void    ft_env(void);
 void    ft_unsetenv(char *key);
 void    ft_unset(char **args);
+const char	*skip_spaces(const char *s);
+int	skip_quoted(const char *s, int i);
+int	token_size(const char *str);
+char	**init_token_array(const char *str, int *len);
+void	copy_token(char *dst, const char *src, int size);
 //void    dbg(const char *msg, t_tree *n);
 #endif
