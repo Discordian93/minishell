@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 11:38:16 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/15 14:12:22 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,19 @@ t_data	*init_data()
 
 }
 
+
 int main(void)
 {
     t_data *data;
 
+	signal(SIGINT, &sigint_parent);
+	signal(SIGQUIT, SIG_IGN);
+	//setup_signals_parent();
     data = init_data();
     if (!data)
         panic("malloc failed\n");
-
+	
+	
     while (1)
     {
         getcwd(data->prompt, sizeof(data->prompt));
@@ -54,6 +59,7 @@ int main(void)
             write(2, "token failed\n", 14);
         else
             runcmd(data->tree, data);
+		printf("%d\n",status);
 
         ft_free(data);
         rl_on_new_line();

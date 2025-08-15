@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/12 21:59:24 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/15 13:49:42 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <signal.h>
 # include "libft/libft.h"
 
 # define PATH_MAX 4096
@@ -74,7 +75,7 @@ typedef struct s_redir
 
 
 
-
+extern int status;
 int     count_words(const char *s);
 t_tree	*create_tree_node(void *obj, char *label);
 void	free_tree(t_tree *root);
@@ -130,5 +131,7 @@ int	skip_quoted(const char *s, int i);
 int	token_size(const char *str);
 char	**init_token_array(const char *str, int *len);
 void	copy_token(char *dst, const char *src, int size);
+void	sigint_parent(int signo);
+void    setup_signals_parent(void);
 //void    dbg(const char *msg, t_tree *n);
 #endif
