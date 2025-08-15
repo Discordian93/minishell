@@ -6,7 +6,7 @@
 #    By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 23:01:13 by yuliano           #+#    #+#              #
-#    Updated: 2025/08/15 13:09:45 by yuliano          ###   ########.fr        #
+#    Updated: 2025/08/15 22:52:11 by yuliano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,7 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
+	@rm -rf $(OBJ_DIR)
 
 re: fclean all
 

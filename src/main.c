@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/15 14:12:22 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/15 22:48:59 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,17 @@ int main(void)
             write(2, "token failed\n", 14);
         else
             runcmd(data->tree, data);
-		printf("%d\n",status);
+		//printf("%d\n",status);
 
         ft_free(data);
         rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
     }
 
     rl_clear_history(); 
     free(data);
-    return 0;
+    return (0);
 } 
 
 

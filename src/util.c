@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:21:24 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/01 20:30:56 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/15 20:40:52 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int	is_node_type(t_tree *node, char *type)
  */
 void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2])
 {
+	signal(SIGINT,  SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	close(fd[READ_END]);
 	if (dup2(fd[WRITE_END], STDOUT_FILENO) < 0)
 		panic("dup2 write failed\n");
@@ -68,6 +70,8 @@ void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2])
 
 void	run_pipe_child_right(t_tree *tree, t_data *data, int fd[2])
 {
+	signal(SIGINT,  SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	close(fd[WRITE_END]);
 	if (dup2(fd[READ_END], STDIN_FILENO) < 0)
 		panic("dup2 read failed\n");

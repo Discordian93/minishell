@@ -6,25 +6,34 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 13:07:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/15 14:09:08 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/15 21:10:24 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int status = 0;
+//int status = 0;
+volatile sig_atomic_t status = 0;
 
 void	sigint_parent(int signo)
 {
     (void)signo;
     status = 130;            // 128 + SIGINT
     write(STDOUT_FILENO, "\n", 1);  // como bash
-	printf("%d\n", status);
+	//printf("%d\n", status);
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
 }
 
+int decode_wait_status(int st)
+{
+    if (WIFEXITED(st))
+        return WEXITSTATUS(st);
+    if (WIFSIGNALED(st)) 
+        return (128 + WTERMSIG(st));
+    return (0);
+}
 
 
 /*
