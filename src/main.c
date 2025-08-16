@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/16 14:22:44 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/16 17:22:27 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,29 +31,37 @@ t_data	*init_data()
 int main(void)
 {
     t_data *data;
+   
 
 	
-	signal(SIGQUIT, SIG_IGN);
 	//setup_signals_parent();
     data = init_data();
     if (!data)
         panic("malloc failed\n");
 	
-	
+    //signal(SIGQUIT, SIG_IGN);
+    sig_init();
     while (1)
     {
-        signal(SIGINT, &sigint_parent);
+        //signal(SIGINT, &sigint_parent);
         
         getcwd(data->prompt, sizeof(data->prompt));
         data->new_prompt = ft_strjoin(data->prompt, "$  ");
-        printf("flag: %s\n", data->new_prompt);
+        //printf("flag: %s\n", data->new_prompt);
         data->input = readline(data->new_prompt);
-
-        if (!data->input || ft_strncmp(data->input, "exit", 5) == 0)
+        if (!data->input)
         {
             ft_free(data);
             break;
         }
+        if (data->input[0] == '\0')
+              continue;
+        /*
+        if (!data->input || ft_strncmp(data->input, "exit", 5) == 0)
+        {
+            ft_free(data);
+            break;
+        }*/
         
         if (*data->input)
             add_history(data->input);
@@ -62,10 +70,10 @@ int main(void)
             write(2, "token failed\n", 14);
         else
             runcmd(data->tree, data);
-		printf("%d\n",status);
+		//printf("%d\n",status);
 
         ft_free(data);
-        reboot_prompt();
+        //reboot_prompt();
         
     }
 

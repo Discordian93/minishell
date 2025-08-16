@@ -6,7 +6,7 @@
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/16 12:52:35 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/16 17:09:02 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,7 @@ typedef struct s_redir
 
 
 
-//extern int status;
-extern volatile sig_atomic_t status;
+extern int status;
 int     count_words(const char *s);
 t_tree	*create_tree_node(void *obj, char *label);
 void	free_tree(t_tree *root);
@@ -137,4 +136,8 @@ void    setup_signals_parent(void);
 int     decode_wait_status(int st);
 void	reboot_prompt();
 void    setup_signals_parent(void);
+void	sig_handler(int sig, siginfo_t *info, void *context);
+void	sig_init(void);
+void	sig_ignore(void);
+void	sig_default(void);
 #endif
