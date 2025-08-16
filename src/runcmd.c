@@ -3,16 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   runcmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 17:16:03 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/15 21:44:23 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "minishell.h"
-
-
 
 
 #include "minishell.h"
@@ -56,8 +52,10 @@ void run_exec(t_tree *tree, t_data *data)
 {
     t_exec *exec;
     pid_t   pid;
+	int		st;
 	
 	exec = (t_exec *)tree-> obj;
+
     // Caso especial: EXEC sin argv[0] (línea de SOLO redirecciones: "> a")
     if (!exec || !exec->argv[0])
     {
@@ -82,6 +80,8 @@ void run_exec(t_tree *tree, t_data *data)
     }
     if (pid == 0)
     {
+		signal(SIGINT,  SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
         // Hijo: aplica redirecciones reales (dup2) y ejecuta
         runcmd(tree->left, data);
         if (is_builtin_child(exec) && exec)
@@ -91,53 +91,10 @@ void run_exec(t_tree *tree, t_data *data)
     }
     else
     {
-        waitpid(pid, NULL, 0);
+        waitpid(pid, &st, 0);
+		status = decode_wait_status(st);
     }
 }
-/*
- * Ejecuta un nodo de tipo EXEC.
- * Si el comando es un built-in, lo ejecuta directamente en el proceso actual.
- * Si no, crea un proceso hijo para ejecutar el comando externo usando execve.
- * Esta función maneja la ejecución de comandos simples en el minishell.
- */
-
-/*
-void	run_exec(t_tree *tree, t_data *data)
-{
-	t_exec	*exec;
-	pid_t	pid;
-	
-	//si no es NULL, hacemos casting: caso parse > a
-	if (tree ->obj)
-		exec = (t_exec *)tree->obj;
-	if (is_builtin_parents(exec))
-		ft_cd(exec->argv);
-	
-	else
-	{
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork failed\n");
-			return ;
-		}
-		//creo que el problema es que no entra  la proceso hijo
-		if (pid == 0)
-		{
-			runcmd(tree->left, data);
-			if (is_builtin_child(exec))
-				execute_builtin_child(exec);
-			else
-				execute_external_command(exec);
-			//termina el proceso hijo: caso parse > a
-			exit(1);
-		}
-		if (pid > 0)
-			waitpid(pid, NULL, 0);
-	}
-}
-
-*/
 
 /*
  * Ejecuta un comando externo en el proceso hijo.
@@ -181,6 +138,7 @@ void	run_redir(t_tree *tree, t_data *data)
 	runcmd(tree->left, data);
 }
 
+
 /*
  * Ejecuta un nodo de tipo PIPE, creando un pipe y dos procesos hijos
  * para manejar la comunicación entre los comandos.
@@ -190,6 +148,7 @@ void	run_pipe(t_tree *tree, t_data *data)
 	int		fd[2];
 	pid_t	pid_left;
 	pid_t	pid_right;
+	int		st;
 
 	if (pipe(fd) == -1)
 		perror("pipe failed\n");
@@ -206,7 +165,9 @@ void	run_pipe(t_tree *tree, t_data *data)
 	close(fd[0]);
 	close(fd[1]);
 	waitpid(pid_left, NULL, 0);
-	waitpid(pid_right, NULL, 0);
+	waitpid(pid_right, &st, 0);
+	status = decode_wait_status(st);
+	
 }
 
 

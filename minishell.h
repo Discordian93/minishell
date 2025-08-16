@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 18:58:57 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/15 21:10:35 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <signal.h>
 # include "libft/libft.h"
 
 # define PATH_MAX 4096
@@ -74,7 +75,8 @@ typedef struct s_redir
 
 
 
-
+//extern int status;
+extern volatile sig_atomic_t status;
 int     count_words(const char *s);
 t_tree	*create_tree_node(void *obj, char *label);
 void	free_tree(t_tree *root);
@@ -125,5 +127,13 @@ void	execute_builtin_parents(t_exec *exec);
 void    ft_env(void);
 void    ft_unsetenv(char *key);
 void    ft_unset(char **args);
-//void    dbg(const char *msg, t_tree *n);
+const char	*skip_spaces(const char *s);
+int	skip_quoted(const char *s, int i);
+int	token_size(const char *str);
+char	**init_token_array(const char *str, int *len);
+void	copy_token(char *dst, const char *src, int size);
+void	sigint_parent(int signo);
+void    setup_signals_parent(void);
+int     decode_wait_status(int st);
+
 #endif

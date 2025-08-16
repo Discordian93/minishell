@@ -6,55 +6,46 @@
 #    By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 23:01:13 by yuliano           #+#    #+#              #
-#    Updated: 2025/08/09 22:03:51 by yuliano          ###   ########.fr        #
+#    Updated: 2025/08/15 22:52:11 by yuliano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-
-# Nombre del ejecutable
 NAME = minishell
+SRC_DIR = src
+OBJ_DIR = obj
 
-# Archivos objeto
-OBJS = ft_token.o main.o parse.o util.o sh.o bultins.o clean.o \
-	runcmd.o environ.o expand.o heredoc.o check_token.o
+SRCS = token.c main.c parse.c util.c bultins.c clean.c \
+    runcmd.c environ.c expand.c heredoc.c check_token.c \
+	count_token.c get_path.c signal.c
 
-# Flags de compilación: incluye depuración (-g)
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+
 CFLAGS = -Wall -Wextra -Werror -g -I./
-
-# Flags de enlace para readline y ncurses
 LDFLAGS = -lreadline -lncurses
-
-# Librerías adicionales (libft)
 LIBS = libft/libft.a
 
-# Regla principal: compila librerías y el ejecutable
 all: libs $(NAME)
 	@echo "✅ DONE"
 
-# Compila las librerías (libft)
 libs:
 	@make -C libft
 
-# Compila el ejecutable principal
 $(NAME): $(OBJS)
 	@gcc $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
 	@echo "✅ COMPILED"
 
-# Regla para compilar archivos .c a .o
-%.o : %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
 	@gcc $(CFLAGS) -c $< -o $@
 
-# Limpia archivos .o y limpia libft
 clean:
 	@make clean -C libft
-	@rm -f $(OBJS)
+	@rm -f $(OBJ_DIR)/*.o
 
-# Limpieza total (incluye ejecutable)
 fclean: clean
 	@rm -f $(NAME)
+	@rm -rf $(OBJ_DIR)
 
-# Regla para recompilar desde cero
 re: fclean all
 
-# Especifica que estas no son archivos, sino comandos
 .PHONY: all clean fclean re libs

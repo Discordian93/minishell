@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:47:30 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 16:23:25 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/12 21:16:16 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,33 @@ char    **expand_vars(char **tokens)
     expanded[j] = NULL;
     return (expanded);
 }
+
+
+
+char	*ft_strndup(char *str, size_t n)
+{
+	char	*dup;
+	size_t	len;
+	size_t	i;
+
+    i= 0;
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	if (n < len)
+		len = n;
+	dup = malloc(len + 1);
+	if (!dup)
+		return (NULL);
+	while (i < len)
+	{
+        dup[i] = str[i];
+        i++;
+    }
+	dup[i] = '\0';
+	return (dup);
+}
+
 
 /*
 // Función de prueba para expand_vars
