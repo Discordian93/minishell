@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+extern volatile sig_atomic_t status;
+
 void	append(char **s1, char *s2)
 {
 	char	*appended;
@@ -26,6 +28,17 @@ void	append(char **s1, char *s2)
 		exit(1);
 }
 
+void expand_sig(char **result)
+{
+    char *sig;
+
+    sig = ft_itoa(status);
+    if (!sig)
+        return ;
+    append(result, sig);
+    free(sig);
+}
+
 void expand_var(char **token, char **result)
 {
     char    *varname;
@@ -33,6 +46,11 @@ void expand_var(char **token, char **result)
     char c[2];
     
     (*token)++;
+    if (**token == '?')
+    {
+        (*token)++;
+        expand_sig(result);
+    }
     varname = malloc(1);
     if (!varname)
         exit(1);
