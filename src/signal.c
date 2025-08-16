@@ -3,28 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 13:07:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/15 21:10:24 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/16 17:08:32 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//int status = 0;
-volatile sig_atomic_t status = 0;
+int status = 0;
 
-void	sigint_parent(int signo)
-{
-    (void)signo;
-    status = 130;            // 128 + SIGINT
-    write(STDOUT_FILENO, "\n", 1);  // como bash
-	//printf("%d\n", status);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-}
 
 int decode_wait_status(int st)
 {
@@ -35,9 +24,96 @@ int decode_wait_status(int st)
     return (0);
 }
 
+/**
+ * Manejador general de señales.
+ * Imita el comportamiento de bash en entorno interactivo:
+ * - Ctrl+C (SIGINT): Imprime nueva línea y refresca el prompt.
+ * - Ctrl+\ (SIGQUIT): No hace nada visible.
+ */
+void	sig_handler(int sig, siginfo_t *info, void *context)
+{
+	(void)info;
+	(void)context;
 
-/*
-static void set_handler(int signo, void (*handler)(int), int flags)
+	if (sig == SIGINT)
+	{
+		write(STDOUT_FILENO, "\n", 1);       // Mueve el prompt a nueva línea
+		rl_on_new_line();                    // Notifica que estamos en línea nueva
+		rl_replace_line("", 0);             // Borra línea actual
+		rl_redisplay();                     // Redibuja prompt
+	}
+	
+}
+
+
+
+/**
+ * Inicializa el manejo de señales personalizado para la shell padre.
+ * Se usa SA_SIGINFO para que el manejador reciba contexto adicional.
+ */
+
+
+void	sig_init(void)
+{
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART | SA_SIGINFO;
+	sa.sa_sigaction = &sig_handler;
+	sigaction(SIGINT, &sa, NULL);     // Ctrl+C
+
+	// Para SIGQUIT, asegúrate de ignorarla por completo
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
+
+}
+
+
+/**
+ * Ignora temporalmente señales.
+ * Útil en el padre mientras espera hijos (evita doble manejo).
+ */
+void	sig_ignore(void)
+{
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
+}
+
+/**
+ * Restaura el comportamiento por defecto del sistema.
+ * Útil en los procesos hijos, antes de ejecutar comandos externos.
+ */
+void	sig_default(void)
+{
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sa.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
+}
+
+
+
+/**
+ * Alternativa simple para restaurar señales usando signal().
+ * Hace lo mismo que sig_default() pero más directo.
+ */
+void	sig_reset(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
+
+
+
+/*static void set_handler(int signo, void (*handler)(int), int flags)
 {
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -47,10 +123,10 @@ static void set_handler(int signo, void (*handler)(int), int flags)
     if (sigaction(signo, &sa, NULL) == -1)
         perror("sigaction");
 }
-
-void setup_signals_parent(void)
+*/
+/*void setup_signals_parent(void)
 {
     set_handler(SIGINT,  sigint_parent, 0);                  // Ctrl-C
-    set_handler(SIGQUIT, (void (*)(int))SIG_IGN, 0);         // Ctrl-\
+    set_handler(SIGQUIT, (void (*)(int))SIG_IGN, 0);         
 }
 */
