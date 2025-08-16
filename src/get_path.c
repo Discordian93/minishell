@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 18:49:37 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/12 23:08:00 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/16 18:44:58 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char	*get_command_path(const char *cmd)
 		return (NULL);
 	if (ft_strchr(cmd, '/'))
 		return (check_direct_path(cmd));
-	path_env = getenv("PATH");
+	path_env = ft_getenv("PATH");
 	if (!path_env)
 		return (NULL);
 	paths = ft_split(path_env, ':');
