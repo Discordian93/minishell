@@ -110,6 +110,7 @@ void	*freeandnull(char *s)
 	return (NULL);
 }
 
+
 /*int	is_variable_start(t_lexer *lexer)
 {
 	char	next_char;

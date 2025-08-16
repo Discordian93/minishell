@@ -67,7 +67,7 @@ void run_exec(t_tree *tree, t_data *data)
     // Builtins en el padre (los que alteran el estado del shell)
     if (is_builtin_parents(exec) && exec)
 	{
-		execute_builtin_parents(exec);
+		execute_builtin_parents(exec, data);
 		return ;
 	}
 		

@@ -50,6 +50,7 @@ void expand_var(char **token, char **result)
     {
         (*token)++;
         expand_sig(result);
+        return ;
     }
     varname = malloc(1);
     if (!varname)

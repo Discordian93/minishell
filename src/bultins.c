@@ -32,6 +32,8 @@ int is_builtin_child(t_exec *exec)
 		return (1);
 	else if (ft_strncmp(exec->argv[0], "env", 4) == 0)
 		return (1);
+	else if (ft_strncmp(exec->argv[0], "exit", 5) == 0)
+		return (1);
 	return (0);
 }
 
@@ -107,6 +109,38 @@ void	ft_pwd(void)
 	printf("%s\n", buf);
 }
 
+void ft_exit(char **args, t_data *data)
+{
+    int arg_count;
+	
+	
+	arg_count = count_split(args);
+    printf("exit\n");
+    if (arg_count == 1)
+    {
+        free_and_exit(data, status);
+    }
+    else if (arg_count == 2)
+    {
+        if (!is_valid_number(args[1]))
+        {
+            write(2, "minishell: exit: ", 17);
+            write(2, args[1], ft_strlen(args[1]));
+            write(2, ": numeric argument required\n", 28);
+            free_and_exit(data, 2);
+        }
+        status = ft_atoi(args[1]);
+        status = ((status % 256) + 256) % 256;
+        free_and_exit(data, status);
+    }
+    else
+    {
+        write(2, "minishell: exit: too many arguments\n", 37);
+        status = 1;
+        return;
+    }
+}
+
 void execute_builtin_child(t_exec *exec)
 {
 	if (ft_strncmp(exec->argv[0], "echo", 5) == 0)
@@ -119,7 +153,7 @@ void execute_builtin_child(t_exec *exec)
 	// ... otros builtins
 }
 
-void	execute_builtin_parents(t_exec *exec)
+void	execute_builtin_parents(t_exec *exec, t_data *data)
 {
 	if (ft_strncmp(exec->argv[0], "cd", 3) == 0)
 		ft_cd(exec->argv);
@@ -127,6 +161,8 @@ void	execute_builtin_parents(t_exec *exec)
 		export(exec->argv);
 	else if (ft_strncmp(exec->argv[0],"unset", 6) == 0)
 		ft_unset(exec->argv);
+	else if (ft_strncmp(exec->argv[0], "exit", 5) == 0)
+        ft_exit(exec->argv, data);
 	return ;
 }
 
