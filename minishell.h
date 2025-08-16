@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/15 21:10:35 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/16 12:52:35 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,5 +135,6 @@ void	copy_token(char *dst, const char *src, int size);
 void	sigint_parent(int signo);
 void    setup_signals_parent(void);
 int     decode_wait_status(int st);
-
+void	reboot_prompt();
+void    setup_signals_parent(void);
 #endif

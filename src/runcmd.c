@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   runcmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/15 21:44:23 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/16 13:53:59 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void run_exec(t_tree *tree, t_data *data)
 		
     // Resto: ejecutamos en hijo
     pid = fork();
+	//sig_ignore();
     if (pid == -1)
     {
         perror("fork failed");
@@ -82,6 +83,7 @@ void run_exec(t_tree *tree, t_data *data)
     {
 		signal(SIGINT,  SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
+		printf("flag: HIJO\n");
         // Hijo: aplica redirecciones reales (dup2) y ejecuta
         runcmd(tree->left, data);
         if (is_builtin_child(exec) && exec)
@@ -181,9 +183,19 @@ void	runcmd(t_tree *tree, t_data *data)
 	if (!tree)
 		return ;
 	if (is_node_type(tree, "EXEC"))
-		run_exec(tree, data);
+	{
+		printf("EXEC\n");
+		run_exec(tree, data);	
+	}
+	
 	else if (is_node_type(tree, "REDIR"))
+	{
+		printf("REDIR\n");
 		run_redir(tree, data);
+	}
 	else if (is_node_type(tree, "PIPE"))
+	{
+		printf("PIPE\n");
 		run_pipe(tree, data);
+	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 13:07:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/15 21:10:24 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/16 14:24:08 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,26 @@ void	sigint_parent(int signo)
 {
     (void)signo;
     status = 130;            // 128 + SIGINT
-    write(STDOUT_FILENO, "\n", 1);  // como bash
+      // como bash
 	//printf("%d\n", status);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
+	//if (signo == SIGINT || signo == SIGQUIT )
+	//{
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();        // Notifica que estamos en nueva línea
+		rl_replace_line("", 0);  // Reemplaza con cadena vacía
+    	rl_redisplay();          // Actualiza la pantalla
+    	
+	//}
+    	
+}
+
+void	reboot_prompt()
+{
+    // Limpiar la línea actual y refrescar la pantalla
+	rl_on_new_line();        // Notifica que estamos en nueva línea
+    rl_replace_line("", 0);  // Reemplaza con cadena vacía
+    rl_redisplay();          // Actualiza la pantalla
+    
 }
 
 int decode_wait_status(int st)
@@ -36,8 +51,8 @@ int decode_wait_status(int st)
 }
 
 
-/*
-static void set_handler(int signo, void (*handler)(int), int flags)
+
+/*static void set_handler(int signo, void (*handler)(int), int flags)
 {
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -47,10 +62,10 @@ static void set_handler(int signo, void (*handler)(int), int flags)
     if (sigaction(signo, &sa, NULL) == -1)
         perror("sigaction");
 }
-
-void setup_signals_parent(void)
+*/
+/*void setup_signals_parent(void)
 {
     set_handler(SIGINT,  sigint_parent, 0);                  // Ctrl-C
-    set_handler(SIGQUIT, (void (*)(int))SIG_IGN, 0);         // Ctrl-\
+    set_handler(SIGQUIT, (void (*)(int))SIG_IGN, 0);         
 }
 */
