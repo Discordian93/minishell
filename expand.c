@@ -30,9 +30,20 @@ void expand_var(char **token, char **result)
 {
     char    *varname;
     char    *varval;
+    char	*exit_str;
     char c[2];
     
     (*token)++;
+	if (**token == '?')
+	{
+		(*token)++;  // Skip the '?'
+		exit_str = ft_itoa(get_last_exit_status());
+		if (!exit_str)
+			exit(1);
+		append(result, exit_str);
+		free(exit_str);
+		return;
+	}
     varname = malloc(1);
     if (!varname)
         exit(1);
