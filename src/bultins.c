@@ -20,6 +20,8 @@ int is_builtin_parents(t_exec *exec)
 		return (1);
 	else if (ft_strncmp(exec->argv[0],"unset", 6) == 0)
 		return (1);
+	else if (ft_strncmp(exec->argv[0], "exit", 5) == 0)
+		return (1);
 	else
 		return (0);
 }
@@ -31,8 +33,6 @@ int is_builtin_child(t_exec *exec)
 	else if(ft_strncmp(exec->argv[0], "pwd", 4)  == 0)
 		return (1);
 	else if (ft_strncmp(exec->argv[0], "env", 4) == 0)
-		return (1);
-	else if (ft_strncmp(exec->argv[0], "exit", 5) == 0)
 		return (1);
 	return (0);
 }
