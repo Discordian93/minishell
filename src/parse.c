@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/10 13:30:26 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/17 19:58:28 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ t_tree  *parsepipe_tree(char *input)
 	if (!check_token(input))
 		return (NULL);
 
-    pipe_pos = ft_strchr(input, '|');
+    pipe_pos = my_ft_strchr(input, '|');
     if (pipe_pos == NULL)
 		return (parseexec_tree(input));
 

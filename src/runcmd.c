@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   runcmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/16 16:13:27 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/17 21:12:14 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,6 @@ void run_exec(t_tree *tree, t_data *data)
     }
     if (pid == 0)
     {
-		//signal(SIGINT,  SIG_DFL);
-		//signal(SIGQUIT, SIG_DFL);
-		//printf("flag: HIJO\n");
-
 		sig_default();
         // Hijo: aplica redirecciones reales (dup2) y ejecuta
         runcmd(tree->left, data);
@@ -98,7 +94,6 @@ void run_exec(t_tree *tree, t_data *data)
 		sig_ignore();   // El padre ignora señales mientras espera
         waitpid(pid, &st, 0);
 		status = decode_wait_status(st);
-		
 		sig_init();     // Vuelve a activar las señales personalizadas
     }
 }
@@ -178,7 +173,6 @@ void	run_pipe(t_tree *tree, t_data *data)
 	sig_init(); 
 	
 }
-
 
 /*
  * Ejecuta el árbol de comandos recibido, 

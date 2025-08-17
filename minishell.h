@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/16 18:41:16 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/17 20:31:35 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,4 +141,6 @@ void	sig_init(void);
 void	sig_ignore(void);
 void	sig_default(void);
 int is_valid_number(char *str);
+int     check_input(char *str);
+char	*my_ft_strchr(const char *s, int c);
 #endif

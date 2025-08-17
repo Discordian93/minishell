@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 21:34:55 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/12 22:21:58 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/17 18:41:14 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ const char	*skip_spaces(const char *s)
 		s++;
 	return (s);
 }
+
+
+
 
 /*
  * Objetivo: Avanza el índice hasta encontrar la 

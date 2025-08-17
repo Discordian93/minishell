@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/16 17:22:27 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/17 21:08:43 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,42 +27,29 @@ t_data	*init_data()
 
 }
 
-
 int main(void)
 {
-    t_data *data;
+    t_data  *data;
    
-
-	
-	//setup_signals_parent();
     data = init_data();
     if (!data)
         panic("malloc failed\n");
-	
-    //signal(SIGQUIT, SIG_IGN);
     sig_init();
     while (1)
     {
-        //signal(SIGINT, &sigint_parent);
-        
         getcwd(data->prompt, sizeof(data->prompt));
         data->new_prompt = ft_strjoin(data->prompt, "$  ");
-        //printf("flag: %s\n", data->new_prompt);
         data->input = readline(data->new_prompt);
         if (!data->input)
         {
             ft_free(data);
             break;
         }
-        if (data->input[0] == '\0')
-              continue;
-        /*
-        if (!data->input || ft_strncmp(data->input, "exit", 5) == 0)
-        {
-            ft_free(data);
-            break;
-        }*/
-        
+        if (check_input(data->input))
+		{
+			ft_free(data);
+			 continue;
+		}
         if (*data->input)
             add_history(data->input);
         data->tree = parsepipe_tree(data->input);
@@ -70,52 +57,9 @@ int main(void)
             write(2, "token failed\n", 14);
         else
             runcmd(data->tree, data);
-		//printf("%d\n",status);
-
         ft_free(data);
-        //reboot_prompt();
-        
-    }
-
-    rl_clear_history(); 
+	}
+	rl_clear_history(); 
     free(data);
     return (0);
 } 
-
-
-/*
-void print_tree(t_tree_node *node, int level)
-{
-    if (!node)
-        return;
-
-    for (int i = 0; i < level; i++)
-        printf("  ");
-
-    if (is_node_type(node, "EXEC"))
-    {
-        t_exec *exec = (t_exec *)node->objeto;
-        printf("[EXEC] %s\n", exec->argv[0]);
-    }
-    else if (is_node_type(node, "REDIR"))
-    {
-        t_redir *redir = (t_redir *)node->objeto;
-        printf("[REDIR] fd=%d file=%s\n", redir->fd, redir->file);
-    }
-
-    print_tree(node->left, level + 1);
-}
-
-int main(void)
-{
-    char *input = "echo hola > file1 >> file2 < file3";
-    printf("%s\n\n", input);
-    t_tree_node *tree = parseexec_tree(input);
-
-    printf("\n\033[1;32mÁrbol de ejecución generado:\033[0m\n");
-    print_tree(tree, 0);
-
-    // Aquí podrías liberar el árbol si tienes free_tree implementado
-    return 0;
-}
-*/
