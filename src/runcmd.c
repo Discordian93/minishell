@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/17 21:12:14 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/18 22:52:28 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,68 @@
 // Esta función recorre la cadena de REDIR (node->left) y hace open/close o heredoc.
 // Devuelve 0 si todo OK, -1 si alguna redirección falla.
 // -----------------------------------------------------------------------------
-int	apply_redirs_only(t_tree *node)
+int apply_redirs_only(t_tree *node)
 {
-    while (node && is_node_type(node, "REDIR"))
+    pid_t pid;
+    int st;
+    
+    // Solo hacer fork si realmente hay redirecciones
+    if (is_node_type(node, "REDIR"))
     {
-		int hfd;
-		
-        t_redir *r = (t_redir *)node->obj;
-        if (r->mode & MODE_HEREDOC)
+        pid = fork();
+        if (pid == -1)
         {
-            hfd = handle_heredoc(r->file); // consume heredoc
-            if (hfd < 0)
-                return -1;
-            close(hfd); // no se usa; solo validar/consumir
+            perror("fork failed");
+            return -1; // Cambio: devolver -1 en lugar de void
+        }
+        
+        if (pid == 0)
+        {
+            // Hijo: configurar señales por defecto
+            sig_default();
+            
+            while (node && is_node_type(node, "REDIR"))
+            {
+                int hfd;
+                t_redir *r = (t_redir *)node->obj;
+                
+                if (r->mode & MODE_HEREDOC)
+                {
+                    hfd = handle_heredoc(r->file); // consume heredoc
+                    if (hfd < 0)
+                        exit(1); // Cambio: exit en lugar de return en proceso hijo
+                    close(hfd); // no se usa; solo validar/consumir
+                }
+                else
+                {
+                    int fd = open(r->file, r->mode, 0644);
+                    if (fd < 0)
+                    {
+                        perror("redirection"); // Agregar mensaje de error
+                        exit(1); // Cambio: exit en lugar de return en proceso hijo
+                    }
+                    close(fd); // efecto: crear/truncar/validar
+                }
+                node = node->left; // siguiente redirección (más interna)
+            }
+            exit(0); // Todo salió bien
         }
         else
         {
-            int fd = open(r->file, r->mode, 0644);
-            if (fd < 0)
-                return -1;
-            close(fd); // efecto: crear/truncar/validar
+            // Padre: ignorar señales mientras espera al hijo
+            sig_ignore();
+            waitpid(pid, &st, 0);
+            status = decode_wait_status(st);
+            sig_init(); // Restaurar señales personalizadas
+            
+            // Devolver el resultado basado en el estado del hijo
+            return (WIFEXITED(st) && WEXITSTATUS(st) == 0) ? 0 : -1;
         }
-        node = node->left; // siguiente redirección (más interna)
     }
+    
+    // Si no hay redirecciones, todo OK
     return 0;
 }
-
 
 // Ejecuta un EXEC: builtins en padre si procede; si no, fork + redirs + execve
 void run_exec(t_tree *tree, t_data *data)
@@ -139,6 +175,7 @@ void	run_redir(t_tree *tree, t_data *data)
 	close(fd);
 	runcmd(tree->left, data);
 }
+
 
 
 /*

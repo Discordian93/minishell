@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 13:07:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/16 17:08:32 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/18 22:08:30 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,24 @@ int decode_wait_status(int st)
     if (WIFEXITED(st))
         return WEXITSTATUS(st);
     if (WIFSIGNALED(st)) 
-        return (128 + WTERMSIG(st));
+    {
+        int sig = WTERMSIG(st);
+        // Imprimir mensaje para señales comunes como bash
+        if (sig == SIGINT)
+            write(STDERR_FILENO, "\n", 1);
+        else if (sig == SIGQUIT)
+            write(STDERR_FILENO, "Quit (core dumped)\n", 19);
+        return (128 + sig);
+    }
     return (0);
 }
 
+
+
+
 /**
- * Manejador general de señales.
- * Imita el comportamiento de bash en entorno interactivo:
- * - Ctrl+C (SIGINT): Imprime nueva línea y refresca el prompt.
- * - Ctrl+\ (SIGQUIT): No hace nada visible.
+ * Manejador de señales para el proceso padre (shell interactiva).
+ * Maneja SIGINT (Ctrl+C) cuando el shell está esperando input.
  */
 void	sig_handler(int sig, siginfo_t *info, void *context)
 {
@@ -37,15 +46,14 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 
 	if (sig == SIGINT)
 	{
-		write(STDOUT_FILENO, "\n", 1);       // Mueve el prompt a nueva línea
-		rl_on_new_line();                    // Notifica que estamos en línea nueva
-		rl_replace_line("", 0);             // Borra línea actual
-		rl_redisplay();                     // Redibuja prompt
+        // Actualizar status cuando Ctrl+C se presiona en el prompt
+        status = 130; // 128 + SIGINT(2)
+		write(STDOUT_FILENO, "\n", 1);       
+		rl_on_new_line();                    
+		rl_replace_line("", 0);             
+		rl_redisplay();                     
 	}
-	
 }
-
-
 
 /**
  * Inicializa el manejo de señales personalizado para la shell padre.

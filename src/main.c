@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/17 21:08:43 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/18 22:09:47 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,5 @@ int main(void)
 	}
 	rl_clear_history(); 
     free(data);
-    return (0);
+    return (status);
 } 
