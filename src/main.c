@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:45:42 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/18 22:09:47 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/19 21:49:37 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int main(void)
    
     data = init_data();
     if (!data)
-        panic("malloc failed\n");
+        panic("malloc failed\n", EXIT_FAILURE);
     sig_init();
     while (1)
     {

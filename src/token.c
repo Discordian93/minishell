@@ -6,32 +6,12 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 22:47:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/17 18:40:55 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/19 22:07:59 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-//#include<stdio.h>
-//#include<stdlib.h>
 
-/*const char	*skip_spaces(const char *s);
-int	count_words(const char *s);
-int	skip_quoted(const char *s, int i);
-int	skip_word(const char *s, int i);
-
-// Libera la memoria ya asignada si ocurre un error en medio del proceso
-void free_split(char ***s, int index)
-{
-    int i = 0;
-    while (i < index)
-    {
-        free((*s)[i]);
-        i++;
-    }
-    free(*s);
-    *s = NULL;
-}
-*/
 /*
  * Objetivo: Calcula el tamaño de una subcadena entre comillas.
  * str: puntero a la cadena, *i: índice actual (se actualiza).

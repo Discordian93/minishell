@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bultins.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:42:06 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/10 18:57:07 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/19 21:55:13 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	ft_pwd(void)
 	char	buf[PATH_MAX];
 
 	if (getcwd(buf, sizeof(buf)) == NULL)
-		panic("pwd\n");
+		panic("pwd\n", 127);
 	printf("%s\n", buf);
 }
 

@@ -6,133 +6,11 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/18 22:52:28 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/19 23:09:13 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
-
-// -----------------------------------------------------------------------------
-// Modo bash: si la línea contiene SOLO redirecciones (p.ej. "> a"),
-// NO se ejecuta ningún comando ni se hace fork. Solo se aplican los efectos
-// colaterales: crear/truncar/validar archivos o consumir heredoc.
-// Esta función recorre la cadena de REDIR (node->left) y hace open/close o heredoc.
-// Devuelve 0 si todo OK, -1 si alguna redirección falla.
-// -----------------------------------------------------------------------------
-int apply_redirs_only(t_tree *node)
-{
-    pid_t pid;
-    int st;
-    
-    // Solo hacer fork si realmente hay redirecciones
-    if (is_node_type(node, "REDIR"))
-    {
-        pid = fork();
-        if (pid == -1)
-        {
-            perror("fork failed");
-            return -1; // Cambio: devolver -1 en lugar de void
-        }
-        
-        if (pid == 0)
-        {
-            // Hijo: configurar señales por defecto
-            sig_default();
-            
-            while (node && is_node_type(node, "REDIR"))
-            {
-                int hfd;
-                t_redir *r = (t_redir *)node->obj;
-                
-                if (r->mode & MODE_HEREDOC)
-                {
-                    hfd = handle_heredoc(r->file); // consume heredoc
-                    if (hfd < 0)
-                        exit(1); // Cambio: exit en lugar de return en proceso hijo
-                    close(hfd); // no se usa; solo validar/consumir
-                }
-                else
-                {
-                    int fd = open(r->file, r->mode, 0644);
-                    if (fd < 0)
-                    {
-                        perror("redirection"); // Agregar mensaje de error
-                        exit(1); // Cambio: exit en lugar de return en proceso hijo
-                    }
-                    close(fd); // efecto: crear/truncar/validar
-                }
-                node = node->left; // siguiente redirección (más interna)
-            }
-            exit(0); // Todo salió bien
-        }
-        else
-        {
-            // Padre: ignorar señales mientras espera al hijo
-            sig_ignore();
-            waitpid(pid, &st, 0);
-            status = decode_wait_status(st);
-            sig_init(); // Restaurar señales personalizadas
-            
-            // Devolver el resultado basado en el estado del hijo
-            return (WIFEXITED(st) && WEXITSTATUS(st) == 0) ? 0 : -1;
-        }
-    }
-    
-    // Si no hay redirecciones, todo OK
-    return 0;
-}
-
-// Ejecuta un EXEC: builtins en padre si procede; si no, fork + redirs + execve
-void run_exec(t_tree *tree, t_data *data)
-{
-    t_exec *exec;
-    pid_t   pid;
-	int		st;
-	
-	exec = (t_exec *)tree-> obj;
-
-    // Caso especial: EXEC sin argv[0] (línea de SOLO redirecciones: "> a")
-    if (!exec || !exec->argv[0])
-    {
-        if (apply_redirs_only(tree->left) < 0)
-            perror("redirection");
-        return ; // sin fork ni exec
-    }
-
-    // Builtins en el padre (los que alteran el estado del shell)
-    if (is_builtin_parents(exec) && exec)
-	{
-		execute_builtin_parents(exec, data);
-		return ;
-	}
-		
-    // Resto: ejecutamos en hijo
-    pid = fork();
-	//sig_ignore();
-    if (pid == -1)
-    {
-        perror("fork failed");
-        return;
-    }
-    if (pid == 0)
-    {
-		sig_default();
-        // Hijo: aplica redirecciones reales (dup2) y ejecuta
-        runcmd(tree->left, data);
-        if (is_builtin_child(exec) && exec)
-            execute_builtin_child(exec);
-        else
-            execute_external_command(exec);
-    }
-    else
-    {
-		sig_ignore();   // El padre ignora señales mientras espera
-        waitpid(pid, &st, 0);
-		status = decode_wait_status(st);
-		sig_init();     // Vuelve a activar las señales personalizadas
-    }
-}
 
 /*
  * Ejecuta un comando externo en el proceso hijo.
@@ -143,72 +21,14 @@ void	execute_external_command(t_exec *exec)
 {
 	char		*path;
 	char		path_buf[PATH_MAX];
-	//extern char	**environ;
 
 	path = get_command_path(exec->argv[0]);
 	if (!path)
-		panic("command not found\n");
+		panic("command not found\n", 127);
 	ft_strlcpy(path_buf, path, sizeof(path_buf));
 	free(path);
 	execve(path_buf, exec->argv, env());
-	panic("execve failed\n");
-}
-
-/*
- * Ejecuta un nodo de tipo REDIR, realizando la redirección de archivos
- * y luego ejecutando el comando hijo.
- */
-void	run_redir(t_tree *tree, t_data *data)
-{
-	t_redir	*redir;
-	int		fd;
-
-	redir = (t_redir *)tree->obj;
-	if (redir->mode & MODE_HEREDOC)
-		fd = handle_heredoc(redir->file);
-	else
-		fd = open(redir->file, redir->mode, 0644);
-	if (fd < 0)
-		panic("open failed\n");
-	if (dup2(fd, redir->fd) < 0)
-		panic("dup2 failed\n");
-	close(fd);
-	runcmd(tree->left, data);
-}
-
-
-
-/*
- * Ejecuta un nodo de tipo PIPE, creando un pipe y dos procesos hijos
- * para manejar la comunicación entre los comandos.
- */
-void	run_pipe(t_tree *tree, t_data *data)
-{
-	int		fd[2];
-	pid_t	pid_left;
-	pid_t	pid_right;
-	int		st;
-
-	if (pipe(fd) == -1)
-		perror("pipe failed\n");
-	pid_left = fork();
-	if (pid_left == -1)
-		perror("fork failed\n");
-	if (pid_left == 0)
-		run_pipe_child_left(tree, data, fd);
-	pid_right = fork();
-	if (pid_right == -1)
-		perror("fork failed\n");
-	if (pid_right == 0)
-		run_pipe_child_right(tree, data, fd);
-	close(fd[0]);
-	close(fd[1]);
-	sig_ignore();
-	waitpid(pid_left, NULL, 0);
-	waitpid(pid_right, &st, 0);
-	status = decode_wait_status(st);
-	sig_init(); 
-	
+	panic("execve failed\n", EXIT_FAILURE);
 }
 
 /*
@@ -221,19 +41,9 @@ void	runcmd(t_tree *tree, t_data *data)
 	if (!tree)
 		return ;
 	if (is_node_type(tree, "EXEC"))
-	{
-		//printf("EXEC\n");
-		run_exec(tree, data);	
-	}
-	
+		run_exec(tree, data);
 	else if (is_node_type(tree, "REDIR"))
-	{
-		//printf("REDIR\n");
 		run_redir(tree, data);
-	}
 	else if (is_node_type(tree, "PIPE"))
-	{
-		//printf("PIPE\n");
 		run_pipe(tree, data);
-	}
 }

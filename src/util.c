@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:21:24 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/16 16:12:27 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/19 22:39:34 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // panic(): Imprime mensaje de error y sale
-void panic(char *msg) 
+void panic(char *msg, int status) 
 {
 	perror(msg);
-	exit(1);
+	exit(status);
 }
 
 
@@ -44,38 +44,6 @@ int	is_node_type(t_tree *node, char *type)
 		return (0);
 	
 	return (ft_strncmp(node->label, type, ft_strlen(type)) == 0);
-}
-
-
-/*
- * Ejecuta un nodo de tipo PIPE, creando un pipe y dos procesos hijos
- * para manejar la comunicación entre los comandos conectados por el pipe.
- * El proceso hijo izquierdo ejecuta el comando de la izquierda y redirige
- * su salida estándar al pipe.
- * El proceso hijo derecho ejecuta el comando de la derecha y redirige
- * su entrada estándar al pipe.
- * El padre espera a que ambos hijos terminen.
- */
-void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2])
-{
-	sig_default();
-	close(fd[READ_END]);
-	if (dup2(fd[WRITE_END], STDOUT_FILENO) < 0)
-		panic("dup2 write failed\n");
-	close(fd[WRITE_END]);
-	runcmd(tree->left, data);
-	free_and_exit(data, EXIT_SUCCESS);
-}
-
-void	run_pipe_child_right(t_tree *tree, t_data *data, int fd[2])
-{
-	sig_default();
-	close(fd[WRITE_END]);
-	if (dup2(fd[READ_END], STDIN_FILENO) < 0)
-		panic("dup2 read failed\n");
-	close(fd[READ_END]);
-	runcmd(tree->right, data);
-	free_and_exit(data, EXIT_SUCCESS);
 }
 
 int is_valid_number(char *str)

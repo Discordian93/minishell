@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/17 20:31:35 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/19 22:43:57 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void    handle_redirection(t_tree **current, char **token, int *i);
 t_tree	*parseexec_tree(char *input);
 char	**ft_token(const char *str);
 t_tree	*parsepipe_tree(char *input);
-void	panic(char *msg);
+void    panic(char *msg, int status);
 char	*ft_strjoin_free(char *s1, const char *s2);
 int		count_split(char **str);
 void	free_split(char ***s, int total_count);
@@ -143,4 +143,5 @@ void	sig_default(void);
 int is_valid_number(char *str);
 int     check_input(char *str);
 char	*my_ft_strchr(const char *s, int c);
+void apply_redirs_only(t_tree *node);
 #endif

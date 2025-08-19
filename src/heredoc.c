@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 11:24:30 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/09 20:58:08 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/19 21:59:31 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ int handle_heredoc(char *delim)
     int   quoted_delim;       // 1 si el delimitador venía entrecomillado
 	char	*expanded;
     if (pipe(pipefd) == -1)
-        panic("pipe failed\n");
+        panic("pipe failed\n", EXIT_FAILURE);
 
     quoted_delim = is_wrapped_in_quotes(delim);
     cmp_delim    = strip_wrapping_quotes(delim);
     if (!cmp_delim)
-        panic("malloc failed\n");
+        panic("malloc failed\n", EXIT_FAILURE);
 
     while (1)
     {
@@ -119,7 +119,7 @@ int handle_heredoc(char *delim)
             {
                 free(line);
                 free(cmp_delim);
-                panic("malloc failed\n");
+                panic("malloc failed\n",EXIT_FAILURE);
             }
             write(pipefd[WRITE_END], expanded, ft_strlen(expanded));
             write(pipefd[WRITE_END], "\n", 1);

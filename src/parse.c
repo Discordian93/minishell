@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 12:17:43 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/17 19:58:28 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/19 21:51:00 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void    ft_redir(t_redir **redir,char *file, int mode, int fd)
 {
     *redir = malloc(sizeof(t_redir));
     if (!*redir)
-        panic("malloc failed\n");
+        panic("malloc failed\n", EXIT_FAILURE);
     (*redir)->file = ft_strdup(file);
     (*redir)->mode = mode;
     (*redir)->fd = fd;
@@ -68,7 +68,7 @@ t_exec  *initialize_exec(void)
 
 	exec = malloc(sizeof(t_exec));
 	if (!exec)
-		panic("malloc failed\n");
+		panic("malloc failed\n", EXIT_FAILURE);
 
 	j = 0;
 	while (j < MAXARGS)
