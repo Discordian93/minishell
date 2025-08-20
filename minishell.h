@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/19 22:43:57 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/20 23:04:17 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,4 +144,5 @@ int is_valid_number(char *str);
 int     check_input(char *str);
 char	*my_ft_strchr(const char *s, int c);
 void apply_redirs_only(t_tree *node);
+void	ft_exit(char **args, t_data *data);
 #endif
