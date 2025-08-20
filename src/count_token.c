@@ -13,6 +13,23 @@
 #include "minishell.h"
 
 /*
+ * Helper: Check if current position is at an operator
+ * Returns operator length (1 or 2), or 0 if not an operator
+ */
+static int	check_operator(const char *s, int i)
+{
+	if (!s[i])
+		return (0);
+	if (s[i] == '>' && s[i + 1] == '>')
+		return (2);
+	if (s[i] == '<' && s[i + 1] == '<')
+		return (2);
+	if (s[i] == '>' || s[i] == '<' || s[i] == '|')
+		return (1);
+	return (0);
+}
+
+/*
  * Objetivo: Saltar todos los espacios, tabs y saltos de línea en la cadena.
  * Devuelve un puntero a la primera posición no espacio.
  */
@@ -22,9 +39,6 @@ const char	*skip_spaces(const char *s)
 		s++;
 	return (s);
 }
-
-
-
 
 /*
  * Objetivo: Avanza el índice hasta encontrar la 
@@ -47,16 +61,28 @@ int	skip_quoted(const char *s, int i)
 
 /*
  * Objetivo: Avanza el índice hasta el final de la palabra,
- * considerando comillas como agrupadores. Si encuentra una comilla
- * sin cerrar, devuelve -1 para indicar error; de lo contrario,
- * devuelve el nuevo índice.
+ * considerando comillas como agrupadores y operadores como separadores.
+ * Si encuentra una comilla sin cerrar, devuelve -1 para indicar error; 
+ * de lo contrario, devuelve el nuevo índice.
  */
 int	skip_word(const char *s, int i)
 {
 	char	quote;
+	int		op_len;
 
+	// If we start with an operator, skip just the operator
+	op_len = check_operator(s, i);
+	if (op_len > 0)
+		return (i + op_len);
+	
+	// Skip regular word characters until space, operator, or end
 	while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
 	{
+		// Check if we hit an operator (stop here)
+		if (check_operator(s, i) > 0)
+			break;
+			
+		// Handle quoted sections
 		if (s[i] == '"' || s[i] == '\'')
 		{
 			quote = s[i++];
@@ -73,8 +99,8 @@ int	skip_word(const char *s, int i)
 
 /*
  * Objetivo: Cuenta cuántas palabras hay en la cadena,
- * considerando comillas como agrupadores. Si hay una comilla
- * sin cerrar, devuelve -1 para evitar errores posteriores.
+ * considerando comillas como agrupadores y operadores como tokens separados.
+ * Si hay una comilla sin cerrar, devuelve -1 para evitar errores posteriores.
  */
 int	count_words(const char *s)
 {
@@ -86,8 +112,11 @@ int	count_words(const char *s)
 	i = 0;
 	while (s[i] != '\0')
 	{
+		// Skip spaces
 		while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n')
 			i++;
+		
+		// If we have something to process
 		if (s[i] != '\0')
 		{
 			words++;
