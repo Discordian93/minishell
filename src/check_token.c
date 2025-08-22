@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 21:55:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/20 22:13:36 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/22 16:29:44 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,64 +14,55 @@
 
 int check_token(char *input)
 {
-    char **tok = ft_token(input);
-    int n, i;
+    char    **tok = ft_token(input);
+    int n;
+    int i;
 
     if (!tok)
-        return 0;
+        return (0);
     n = count_split(tok);
-
     i = 0;
     while (i < n)
     {
         if (EQ(tok[i], "|"))
         {
-			if(ft_strlen(tok[i]) != 1)
-			{
+            if(ft_strlen(tok[i]) != 1)
+            {
                 status = 2;
-				free_split(&tok,count_split(tok));
-				return (0);	
-			}
-            // no al inicio ni al final, ni pipes consecutivos
+                free_split(&tok,count_split(tok));
+                return (0);	
+            }
             if (i == 0 || i == n - 1 || EQ(tok[i+1], "|"))
             {
                 status = 2;
                 free_split(&tok, n);
-                return 0;
+                return (0);
             }
         }
         else if (EQ(tok[i], "<") || EQ(tok[i], ">") \
 			|| EQ(tok[i], ">>") || EQ(tok[i], "<<"))
         {
-			if(ft_strlen(tok[i]) > 2)
-			{
+            if(ft_strlen(tok[i]) > 2)
+            {
                 status = 2;
-				free_split(&tok,count_split(tok));
-				return (0);	
-			}
-            // requieren operando a la derecha
+                free_split(&tok,count_split(tok));
+                return (0);	
+            }
             if (i == n - 1)
             {
                 status = 2;
                 free_split(&tok, n);
-                return 0;
+                return (0);
             }
-
-            // el siguiente NO puede ser otro operador (|, <, >, <<, >>)
             if (IS_OP(tok[i+1]))
             {
                 status = 2;
                 free_split(&tok, n);
-                return 0;
+                return (0);
             }
-
-            // comparaciones exactas (ya cubiertas por EQ)
-            // no hace falta chequear strlen; EQ ya descarta tokens mal formados como ">>>"
         }
-        
         i++;
     }
-
     free_split(&tok, n);
-    return 1;
+    return (1);
 }
