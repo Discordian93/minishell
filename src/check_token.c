@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 21:55:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/22 16:54:02 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/22 18:29:04 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	es_pipe_invalida(char **tok, int i, int n)
 		len = ft_strlen(tok[i]);
 	if (len != 1)
 		return (1);
-	if (i == 0 || i == n - 1 || EQ(tok[i + 1], "|"))
+	if (i == 0 || i == n - 1 || ft_strncmp(tok[i + 1], "|", 1) == 0)
 		return (1);
 	return (0);
 }
@@ -45,7 +45,8 @@ int	es_redir_invalida(char **tok, int i, int n)
 		return (1);
 	if (i == n - 1)
 		return (1);
-	if (IS_OP(tok[i + 1]))
+	if (ft_strncmp(tok[i + 1], ">", 1) == 0 \
+		|| ft_strncmp(tok[i + 1], "<", 1) == 0)
 		return (1);
 	return (0);
 }
@@ -72,13 +73,13 @@ int	check_token(char *input)
 	i = 0;
 	while (i < count_split(tok))
 	{
-		if (EQ(tok[i], "|"))
+		if (ft_strncmp(tok[i], "|", 1) == 0)
 		{
 			if (es_pipe_invalida(tok, i, count_split(tok)))
 				return (ft_free_check(tok, count_split(tok)));
 		}
-		else if (EQ(tok[i], "<") || EQ(tok[i], ">") \
-			|| EQ(tok[i], ">>") || EQ(tok[i], "<<"))
+		else if (ft_strncmp(tok[i], "<", 1) == 0 || ft_strncmp(tok[i],">", 1) == 0 || \
+			ft_strncmp(tok[i], ">>", 2) == 0 || ft_strncmp(tok[i], "<<", 2) == 0)
 		{
 			if (es_redir_invalida(tok, i, count_split(tok)))
 				return (ft_free_check(tok, count_split(tok)));
