@@ -176,5 +176,8 @@ char	*strip_wrapping_quotes(const char *s);
 void	append_char(char **res, char c);
 char	*expand_heredoc_line(char *line);
 void	process_heredoc_line(int fd, char *line, int quoted_delim);
-int	is_wrapped_in_quotes(const char *s);
+int		is_wrapped_in_quotes(const char *s);
+void	process_normal_redir(t_redir **redir, char *token, int mode, int fd);
+void	process_heredoc_redir(t_redir **redir, char *delim, int fd);
+char	*fd_to_string(int fd);
 #endif

@@ -87,9 +87,10 @@ void	run_redir(t_tree *tree, t_data *data)
 
 	redir = (t_redir *)tree->obj;
 	if (redir->mode & MODE_HEREDOC)
-		fd = handle_heredoc(redir->file);
-	else
-		fd = open(redir->file, redir->mode, 0644);
+	{
+		panic("Unexpected heredoc in run_redir\n", EXIT_FAILURE);
+	}
+	fd = open(redir->file, redir->mode, 0644);
 	if (fd < 0)
 		panic("open failed\n", EXIT_FAILURE);
 	if (dup2(fd, redir->fd) < 0)

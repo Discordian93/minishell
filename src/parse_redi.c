@@ -56,35 +56,19 @@ void	ft_redir(t_redir **redir, char *file, int mode, int fd)
 	(*redir)->fd = fd;
 }
 
-// Maneja las redirecciones encontradas en los tokens 
-//y actualiza el árbol de ejecución.
 void	handle_redirection(t_tree **current, char **token, int *i)
 {
 	t_redir	*redir;
 	t_tree	*redir_node;
 	int		mode;
 	int		fd;
-	char	*expanded_token;
 
 	get_redir_info(token[*i], &mode, &fd);
-	if (ft_strncmp(token[*i], "<<", 3) == 0)
-	{	
-		//Este es la solucion al problema del heredoc que ha hecho Claude, hay que adaptarlo
-        (*i)++;
-        // Process heredoc immediately and store the pipe fd
-        int heredoc_fd = handle_heredoc(token[*i]);
-        // Convert fd to string to store in redir->file
-        char fd_str[20];
-        sprintf(fd_str, "/dev/fd/%d", heredoc_fd);
-        ft_redir(&redir, fd_str, O_RDONLY, fd);
-	}
+	(*i)++;
+	if (mode & MODE_HEREDOC)
+		process_heredoc_redir(&redir, token[*i], fd);
 	else
-	{
-		(*i)++;
-		expanded_token = expand_token(token[*i]);
-		ft_redir(&redir, expanded_token, mode, fd);
-		free(expanded_token);
-	}
+		process_normal_redir(&redir, token[*i], mode, fd);
 	redir_node = create_tree_node((void *)redir, "REDIR");
 	(*current)->left = redir_node;
 	*current = redir_node;

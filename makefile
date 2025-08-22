@@ -20,7 +20,7 @@ SRCS = token.c main.c parse.c util.c bultins.c clean.c \
 	token_count.c get_path.c signal.c check.c run_exec.c \
 	run_pipe.c run_redir.c builtin_parents.c builtin_child.c \
 	parse_pipe.c parse_redi.c token_util.c clean_tree.c heredoc_utils.c \
-	heredoc1.c expand2.c
+	heredoc1.c expand2.c heredoc_aux.c
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
