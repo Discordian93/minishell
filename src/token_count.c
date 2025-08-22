@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_token.c                                      :+:      :+:    :+:   */
+/*   token_count.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 21:34:55 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/17 18:41:14 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/22 13:52:34 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
  * Helper: Check if current position is at an operator
  * Returns operator length (1 or 2), or 0 if not an operator
  */
-static int	check_operator(const char *s, int i)
+int	check_operator(const char *s, int i)
 {
 	if (!s[i])
 		return (0);
@@ -70,19 +70,13 @@ int	skip_word(const char *s, int i)
 	char	quote;
 	int		op_len;
 
-	// If we start with an operator, skip just the operator
 	op_len = check_operator(s, i);
 	if (op_len > 0)
 		return (i + op_len);
-	
-	// Skip regular word characters until space, operator, or end
 	while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
 	{
-		// Check if we hit an operator (stop here)
 		if (check_operator(s, i) > 0)
-			break;
-			
-		// Handle quoted sections
+			break ;
 		if (s[i] == '"' || s[i] == '\'')
 		{
 			quote = s[i++];
@@ -112,11 +106,8 @@ int	count_words(const char *s)
 	i = 0;
 	while (s[i] != '\0')
 	{
-		// Skip spaces
 		while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n')
 			i++;
-		
-		// If we have something to process
 		if (s[i] != '\0')
 		{
 			words++;

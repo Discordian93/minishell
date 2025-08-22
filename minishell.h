@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 22:33:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/20 23:04:17 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/22 15:15:44 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,4 +145,14 @@ int     check_input(char *str);
 char	*my_ft_strchr(const char *s, int c);
 void apply_redirs_only(t_tree *node);
 void	ft_exit(char **args, t_data *data);
+int	check_operator(const char *s, int i);
+void	init_heredoc_pipe(int pipefd[2]);
+int is_delimiter(const char *line, const char *cmp_delim, size_t len);
+void	heredoc_loop(int write_fd, const char *cmp_delim, int quoted_delim);
+void	write_line_to_pipe(int fd, const char *line);
+char	*strip_wrapping_quotes(const char *s);
+void	append_char(char **res, char c);
+char	*expand_heredoc_line(char *line);
+void	process_heredoc_line(int fd, char *line, int quoted_delim);
+int	is_wrapped_in_quotes(const char *s);
 #endif
