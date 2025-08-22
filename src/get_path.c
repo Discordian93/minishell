@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 18:49:37 by ypacileo          #+#    #+#             */
-/*   Updated: 2025/08/16 18:44:58 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/22 15:16:44 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ char	*join_path_cmd(const char *dir, const char *cmd)
  * @return Una nueva cadena duplicada con la ruta del comando si es ejecutable,
  *         o NULL si la ruta no es accesible o no es ejecutable.
  *
- * Esta función utiliza la llamada al sistema access() para verificar si el archivo en la ruta
+ * Esta función utiliza la llamada al sistema access() 
+ * para verificar si el archivo en la ruta
  * especificada existe y tiene permisos de ejecución. Si es así, retorna un duplicado de la ruta;
  * de lo contrario, retorna NULL.
  */
