@@ -3,66 +3,88 @@
 /*                                                        :::      ::::::::   */
 /*   check_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 21:55:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/22 16:29:44 by ypacileo         ###   ########.fr       */
+/*   Updated: 2025/08/22 16:54:02 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int check_token(char *input)
+/*
+	 * Objetivo: Verifica si el token actual de pipe es inválido.
+	 * Retorna 1 si es inválido, 0 si es válido.
+*/
+int	es_pipe_invalida(char **tok, int i, int n)
 {
-    char    **tok = ft_token(input);
-    int n;
-    int i;
+	int	len;
 
-    if (!tok)
-        return (0);
-    n = count_split(tok);
-    i = 0;
-    while (i < n)
-    {
-        if (EQ(tok[i], "|"))
-        {
-            if(ft_strlen(tok[i]) != 1)
-            {
-                status = 2;
-                free_split(&tok,count_split(tok));
-                return (0);	
-            }
-            if (i == 0 || i == n - 1 || EQ(tok[i+1], "|"))
-            {
-                status = 2;
-                free_split(&tok, n);
-                return (0);
-            }
-        }
-        else if (EQ(tok[i], "<") || EQ(tok[i], ">") \
+	len = 0;
+	if (tok[i])
+		len = ft_strlen(tok[i]);
+	if (len != 1)
+		return (1);
+	if (i == 0 || i == n - 1 || EQ(tok[i + 1], "|"))
+		return (1);
+	return (0);
+}
+
+/*
+	 * Objetivo: Verifica si el token actual de redirección es inválido.
+	 * Retorna 1 si es inválido, 0 si es válido.
+*/
+int	es_redir_invalida(char **tok, int i, int n)
+{
+	int	len;
+
+	len = 0;
+	if (tok[i])
+		len = ft_strlen(tok[i]);
+	if (len > 2)
+		return (1);
+	if (i == n - 1)
+		return (1);
+	if (IS_OP(tok[i + 1]))
+		return (1);
+	return (0);
+}
+
+int	ft_free_check(char **tok, int n)
+{
+	status = 2;
+	free_split(&tok, n);
+	return (0);
+}
+
+/*
+	 * Objetivo: Función principal para verificar la validez de los tokens.
+	 * Retorna 1 si los tokens son válidos, 0 en caso contrario.
+ */
+int	check_token(char *input)
+{
+	char	**tok;
+	int		i;
+
+	tok = ft_token(input);
+	if (!tok)
+		return (0);
+	i = 0;
+	while (i < count_split(tok))
+	{
+		if (EQ(tok[i], "|"))
+		{
+			if (es_pipe_invalida(tok, i, count_split(tok)))
+				return (ft_free_check(tok, count_split(tok)));
+		}
+		else if (EQ(tok[i], "<") || EQ(tok[i], ">") \
 			|| EQ(tok[i], ">>") || EQ(tok[i], "<<"))
-        {
-            if(ft_strlen(tok[i]) > 2)
-            {
-                status = 2;
-                free_split(&tok,count_split(tok));
-                return (0);	
-            }
-            if (i == n - 1)
-            {
-                status = 2;
-                free_split(&tok, n);
-                return (0);
-            }
-            if (IS_OP(tok[i+1]))
-            {
-                status = 2;
-                free_split(&tok, n);
-                return (0);
-            }
-        }
-        i++;
-    }
-    free_split(&tok, n);
-    return (1);
+		{
+			if (es_redir_invalida(tok, i, count_split(tok)))
+				return (ft_free_check(tok, count_split(tok)));
+		}
+		i++;
+	}
+	free_split(&tok, count_split(tok));
+	return (1);
 }
