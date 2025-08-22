@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 21:55:01 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/22 18:29:04 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/22 18:38:33 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,41 +51,31 @@ int	es_redir_invalida(char **tok, int i, int n)
 	return (0);
 }
 
-int	ft_free_check(char **tok, int n)
-{
-	status = 2;
-	free_split(&tok, n);
-	return (0);
-}
-
-/*
-	 * Objetivo: Función principal para verificar la validez de los tokens.
-	 * Retorna 1 si los tokens son válidos, 0 en caso contrario.
- */
 int	check_token(char *input)
 {
 	char	**tok;
 	int		i;
+	int		n;
 
 	tok = ft_token(input);
 	if (!tok)
 		return (0);
+	n = count_split(tok);
 	i = 0;
-	while (i < count_split(tok))
+	while (i < n)
 	{
-		if (ft_strncmp(tok[i], "|", 1) == 0)
+		if (is_pipe_token(tok[i]))
 		{
-			if (es_pipe_invalida(tok, i, count_split(tok)))
-				return (ft_free_check(tok, count_split(tok)));
+			if (es_pipe_invalida(tok, i, n))
+				return (ft_free_check(tok, n));
 		}
-		else if (ft_strncmp(tok[i], "<", 1) == 0 || ft_strncmp(tok[i],">", 1) == 0 || \
-			ft_strncmp(tok[i], ">>", 2) == 0 || ft_strncmp(tok[i], "<<", 2) == 0)
+		else if (is_redir_token(tok[i]))
 		{
-			if (es_redir_invalida(tok, i, count_split(tok)))
-				return (ft_free_check(tok, count_split(tok)));
+			if (es_redir_invalida(tok, i, n))
+				return (ft_free_check(tok, n));
 		}
 		i++;
 	}
-	free_split(&tok, count_split(tok));
+	free_split(&tok, n);
 	return (1);
 }
