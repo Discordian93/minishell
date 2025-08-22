@@ -68,9 +68,15 @@ void	handle_redirection(t_tree **current, char **token, int *i)
 
 	get_redir_info(token[*i], &mode, &fd);
 	if (ft_strncmp(token[*i], "<<", 3) == 0)
-	{
-		(*i)++;
-		ft_redir(&redir, token[*i], mode, fd);
+	{	
+		//Este es la solucion al problema del heredoc que ha hecho Claude, hay que adaptarlo
+        (*i)++;
+        // Process heredoc immediately and store the pipe fd
+        int heredoc_fd = handle_heredoc(token[*i]);
+        // Convert fd to string to store in redir->file
+        char fd_str[20];
+        sprintf(fd_str, "/dev/fd/%d", heredoc_fd);
+        ft_redir(&redir, fd_str, O_RDONLY, fd);
 	}
 	else
 	{

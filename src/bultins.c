@@ -28,7 +28,7 @@ void	execute_builtin_parents(t_exec *exec, t_data *data)
 	if (ft_strncmp(exec->argv[0], "cd", 3) == 0)
 		ft_cd(exec->argv);
 	else if (ft_strncmp(exec->argv[0], "export", 7) == 0)
-		export(exec->argv);
+		ft_export(exec->argv);
 	else if (ft_strncmp(exec->argv[0], "unset", 6) == 0)
 		ft_unset(exec->argv);
 	else if (ft_strncmp(exec->argv[0], "exit", 5) == 0)

@@ -37,7 +37,7 @@ void	export_one(char *s)
 	*split = '=';
 }
 
-void	export(char **s)
+void	ft_export(char **s)
 {
 	s++;
 	while (*s)
