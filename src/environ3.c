@@ -27,6 +27,11 @@ void	export_one(char *s)
 	if (!split)
 		return ;
 	*split = '\0';
+	if (*s == '\0' || ft_isdigit(*s))
+	{
+		write(2, s, ft_strlen(s));
+		write(2, " is not a valid identifier.\n", ft_strlen(" is not a valid identifier.\n"));
+	};
 	ft_setenv(s, split + 1);
 	*split = '=';
 }

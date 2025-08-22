@@ -17,7 +17,8 @@ OBJ_DIR = obj
 SRCS = token.c main.c parse.c util.c bultins.c clean.c \
     runcmd.c handle_environ.c env_aux.c my_setenv.c add_to_environ.c environ.c environ2.c environ3.c expand.c heredoc.c check_token.c \
 	count_token.c get_path.c signal.c check.c run_exec.c \
-	run_pipe.c run_redir.c builtin_parents.c builtin_child.c
+	run_pipe.c run_redir.c builtin_parents.c builtin_child.c \
+	expand2.c
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 

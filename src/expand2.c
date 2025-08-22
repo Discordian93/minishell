@@ -37,7 +37,7 @@ void	expand_sig(char **result)
 	free(sig);
 }
 
-static char	*get_variable_name(char **token)
+char	*get_variable_name(char **token)
 {
 	char	*varname;
 	char	c_str[2];

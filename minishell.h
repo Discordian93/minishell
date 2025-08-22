@@ -165,4 +165,6 @@ int	find_env_index(char *key, char **env);
 char	**copy_environ_except(char **env, size_t skip_index);
 void	my_unsetenv(char *key, char ***env);
 void	*handle_environ(char *key, char *value, size_t op);
+void	expand_sig(char **result);
+char	*get_variable_name(char **token);
 #endif
