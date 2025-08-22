@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 18:37:16 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/22 18:39:14 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/22 19:14:57 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_free_check(char **tok, int n)
 {
-	status = 2;
+	g_status = 2;
 	free_split(&tok, n);
 	return (0);
 }
