@@ -48,7 +48,7 @@ void	parent_process_pipe(pid_t pid_left, pid_t pid_right, int *st)
 	sig_ignore();
 	waitpid(pid_left, NULL, 0);
 	waitpid(pid_right, st, 0);
-	status = decode_wait_status(*st);
+	g_status = decode_wait_status(*st);
 	sig_init();
 }
 

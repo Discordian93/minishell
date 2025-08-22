@@ -58,7 +58,7 @@ void	parent_process(pid_t pid, int *st)
 {
 	sig_ignore();
 	waitpid(pid, st, 0);
-	status = decode_wait_status(*st);
+	g_status = decode_wait_status(*st);
 	sig_init();
 }
 

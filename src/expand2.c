@@ -30,7 +30,7 @@ void	expand_sig(char **result)
 {
 	char	*sig;
 
-	sig = ft_itoa(status);
+	sig = ft_itoa(g_status);
 	if (!sig)
 		return ;
 	append(result, sig);

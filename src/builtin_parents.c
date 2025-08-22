@@ -54,7 +54,7 @@ void	ft_exit(char **args, t_data *data)
 	arg_count = count_split(args);
 	printf("exit\n");
 	if (arg_count == 1)
-		free_and_exit(data, status);
+		free_and_exit(data, g_status);
 	else if (arg_count == 2)
 	{
 		if (!is_valid_number(args[1]))
@@ -64,14 +64,14 @@ void	ft_exit(char **args, t_data *data)
 			write(2, ": numeric argument required\n", 28);
 			free_and_exit(data, 2);
 		}
-		status = ft_atoi(args[1]);
-		status = ((status % 256) + 256) % 256;
-		free_and_exit(data, status);
+		g_status = ft_atoi(args[1]);
+		g_status = ((g_status % 256) + 256) % 256;
+		free_and_exit(data, g_status);
 	}
 	else
 	{
 		write(2, "minishell: exit: too many arguments\n", 37);
-		status = 1;
+		g_status = 1;
 		return ;
 	}
 }

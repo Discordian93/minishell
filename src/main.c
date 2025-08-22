@@ -86,5 +86,5 @@ int	main(void)
 	handle_input(data);
 	rl_clear_history();
 	free(data);
-	return (status);
+	return (g_status);
 }

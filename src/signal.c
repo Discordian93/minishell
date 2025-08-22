@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	status = 0;
+int	g_status = 0;
 
 int	decode_wait_status(int st)
 {
@@ -42,7 +42,7 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 	(void)context;
 	if (sig == SIGINT)
 	{
-		status = 130;
+		g_status = 130;
 		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
