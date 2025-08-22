@@ -15,10 +15,10 @@
 // Función auxiliar para verificar si un token es una redirección
 int	is_redirection(char *token)
 {
-	return (ft_strncmp(token, ">", 2) == 0 || \
-			ft_strncmp(token, "<", 2) == 0 || \
-			ft_strncmp(token, ">>", 3) == 0 || \
-			ft_strncmp(token, "<<", 3) == 0);
+	return (ft_strncmp(token, ">", 2) == 0
+		|| ft_strncmp(token, "<", 2) == 0
+		|| ft_strncmp(token, ">>", 3) == 0
+		|| ft_strncmp(token, "<<", 3) == 0);
 }
 
 // Función auxiliar para determinar el tipo de redirección
