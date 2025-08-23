@@ -16,32 +16,30 @@
  * Recorre una cadena de nodos REDIR y aplica cada redirección.
  * Si encuentra un error en la redirección, termina el proceso con error.
  */
-void apply_redirs_chain(t_tree *node)
+void	apply_redirs_chain(t_tree *node)
 {
-    t_redir *r;
-    int     fd;
+	t_redir	*r;
+	int		fd;
 
-    while (node && is_node_type(node, "REDIR"))
-    {
-        r = (t_redir *)node->obj;
-        if (r->mode & MODE_HEREDOC)
-        {
-            /* For here-docs, already created during parsing */
-            /* Only check that the descriptor can be opened for reading */
-            fd = open(r->file, O_RDONLY);
-            if (fd < 0)
-                panic("redirection", EXIT_FAILURE);
-            close(fd);
-        }
-        else
-        {
-            fd = open(r->file, r->mode, 0644);
-            if (fd < 0)
-                panic("redirection", EXIT_FAILURE);
-            close(fd);
-        }
-        node = node->left;
-    }
+	while (node && is_node_type(node, "REDIR"))
+	{
+		r = (t_redir *)node->obj;
+		if (r->mode & MODE_HEREDOC)
+		{
+			fd = open(r->file, O_RDONLY);
+			if (fd < 0)
+				panic("redirection", EXIT_FAILURE);
+			close(fd);
+		}
+		else
+		{
+			fd = open(r->file, r->mode, 0644);
+			if (fd < 0)
+				panic("redirection", EXIT_FAILURE);
+			close(fd);
+		}
+		node = node->left;
+	}
 }
 
 /*
