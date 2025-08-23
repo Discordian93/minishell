@@ -6,18 +6,18 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/23 13:33:37 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/23 14:16:04 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-void	ft_panic()
+void	ft_panic(void)
 {
-	write(2,"commmand not fund\n", 19);
+	write(2, "commmand not fund\n", 19);
 	exit(127);
 }
+
 /*
  * Ejecuta un comando externo en el proceso hijo.
  * Busca la ruta del comando, la copia a un buffer y llama a execve.
