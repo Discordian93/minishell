@@ -44,8 +44,14 @@ void	draw_prompt(t_data *data)
  * muestra el prompt, lee la entrada del usuario, 
  * la procesa y ejecuta los comandos.
 */
+static void	run_if_status_ok(t_tree *tree, t_data *data, int previous_status)
+{
+	if (!(g_status == 130 && previous_status != 130))
+		runcmd(tree, data);
+}
+
 void	handle_input(t_data *data)
-{	
+{
 	int	previous_status;
 
 	while (1)
@@ -68,10 +74,7 @@ void	handle_input(t_data *data)
 		if (!data->tree)
 			write(2, "token failed\n", 14);
 		else
-		{
-			if (!(g_status == 130 && previous_status != 130))
-				runcmd(data->tree, data);
-		}
+			run_if_status_ok(data->tree, data, previous_status);
 		ft_free(data);
 	}
 }
