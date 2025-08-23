@@ -6,7 +6,7 @@
 #    By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 23:01:13 by yuliano           #+#    #+#              #
-#    Updated: 2025/08/22 18:38:15 by yuliano          ###   ########.fr        #
+#    Updated: 2025/08/23 13:54:01 by yuliano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ SRCS = token.c main.c parse.c util.c bultins.c clean.c \
 	token_count.c get_path.c signal.c check.c run_exec.c \
 	run_pipe.c run_redir.c builtin_parents.c builtin_child.c \
 	parse_pipe.c parse_redi.c token_util.c clean_tree.c heredoc_utils.c \
-	heredoc1.c expand2.c heredoc_aux.c check_token2.c
+	heredoc1.c expand2.c heredoc_aux.c check_token2.c heredoc2.c
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
