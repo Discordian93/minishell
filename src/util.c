@@ -18,7 +18,6 @@ void	panic(char *msg, int status)
 	exit(status);
 }
 
-// Crea un nuevo nodo del árbol con el objeto y etiqueta dados
 t_tree	*create_tree_node(void *obj, char *label)
 {
 	t_tree	*new_node;
@@ -33,7 +32,6 @@ t_tree	*create_tree_node(void *obj, char *label)
 	return (new_node);
 }
 
-// Verifica si un nodo es de un tipo específico
 int	is_node_type(t_tree *node, char *type)
 {
 	if (!node || !node->label || !type)

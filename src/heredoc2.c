@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Inicializa las variables necesarias para heredoc:
- * - Crea el pipe
- * - Extrae y limpia el delimitador
- */
 static char	*init_heredoc_child(int pipefd[2], char *delim, int *quoted_delim)
 {
 	char	*cmp_delim;
@@ -29,9 +24,6 @@ static char	*init_heredoc_child(int pipefd[2], char *delim, int *quoted_delim)
 	return (cmp_delim);
 }
 
-/*
- * Proceso hijo que ejecuta el bucle heredoc y escribe en pipe
- */
 static void	run_heredoc_child(char *delim, int pipefd[2])
 {
 	char	*cmp_delim;
@@ -45,9 +37,6 @@ static void	run_heredoc_child(char *delim, int pipefd[2])
 	exit(EXIT_SUCCESS);
 }
 
-/*
- * Proceso padre que espera al heredoc y gestiona señales
- */
 static int	wait_heredoc_child(pid_t pid, int pipefd[2])
 {
 	int	st;
@@ -65,9 +54,6 @@ static int	wait_heredoc_child(pid_t pid, int pipefd[2])
 	return (pipefd[READ_END]);
 }
 
-/*
- * Función principal de manejo de heredoc (cumple Norm)
- */
 int	handle_heredoc(char *delim)
 {
 	int		pipefd[2];

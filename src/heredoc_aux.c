@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-/* Converts an integer to string (for fd conversion) */
 char	*fd_to_string(int fd)
 {
 	char	*prefix;
@@ -28,7 +27,6 @@ char	*fd_to_string(int fd)
 	return (result);
 }
 
-/* Handles heredoc redirection specifically */
 void	process_heredoc_redir(t_redir **redir, char *delim, int fd)
 {
 	int		heredoc_fd;
@@ -51,7 +49,6 @@ void	process_heredoc_redir(t_redir **redir, char *delim, int fd)
 	free(fd_path);
 }
 
-/* Handles normal (non-heredoc) redirection */
 void	process_normal_redir(t_redir **redir, char *token, int mode, int fd)
 {
 	char	*expanded_token;

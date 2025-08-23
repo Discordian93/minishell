@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-/* Auxiliary function to create a "KEY=VALUE" string */
 char	*create_env_string(char *key, char *value)
 {
 	char	*str;
@@ -27,7 +26,6 @@ char	*create_env_string(char *key, char *value)
 	return (str);
 }
 
-/* Auxiliary function to free an entire environment array */
 void	free_environ(char **env)
 {
 	size_t	i;
@@ -40,7 +38,6 @@ void	free_environ(char **env)
 	free(env);
 }
 
-/* Auxiliary function to free partial environment (for error handling) */
 void	free_partial_environ(char **env, size_t count)
 {
 	size_t	i;
@@ -53,7 +50,6 @@ void	free_partial_environ(char **env, size_t count)
 	free(env);
 }
 
-/* Auxiliary function to count environment variables */
 size_t	count_environ(char **env)
 {
 	size_t	i;

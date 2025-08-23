@@ -12,10 +12,6 @@
 
 #include "minishell.h"
 
-/**
- * Libera la memoria de un array de strings de tamaño fijo (MAXARGS)
- * @param argv: array de strings
- */
 void	free_argv(char **argv)
 {
 	int	i;
@@ -28,10 +24,6 @@ void	free_argv(char **argv)
 	}
 }
 
-/**
- * Libera la memoria de un nodo de tipo EXEC
- * @param exec: puntero al struct t_exec
- */
 void	free_exec(t_exec *exec)
 {
 	if (!exec)
@@ -40,10 +32,6 @@ void	free_exec(t_exec *exec)
 	free(exec);
 }
 
-/**
- * Libera la memoria de un nodo de tipo REDIR
- * @param redir: puntero al struct t_redir
- */
 void	free_redir(t_redir *redir)
 {
 	if (!redir)
@@ -52,10 +40,6 @@ void	free_redir(t_redir *redir)
 	free(redir);
 }
 
-/**
- * Libera recursivamente la memoria de un árbol de nodos t_tree
- * @param node: nodo raíz del árbol
- */
 void	free_tree(t_tree *node)
 {
 	if (!node)

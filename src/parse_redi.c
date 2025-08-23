@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-// Función auxiliar para verificar si un token es una redirección
 int	is_redirection(char *token)
 {
 	return (ft_strncmp(token, ">", 2) == 0
@@ -21,7 +20,6 @@ int	is_redirection(char *token)
 		|| ft_strncmp(token, "<<", 3) == 0);
 }
 
-// Función auxiliar para determinar el tipo de redirección
 void	get_redir_info(char *token, int *mode, int *fd)
 {
 	if (ft_strncmp(token, ">>", 3) == 0)

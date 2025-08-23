@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Objetivo: Calcula el tamaño de una subcadena entre comillas.
- * str: puntero a la cadena, *i: índice actual (se actualiza).
- * Devuelve el tamaño de la subcadena entre comillas, incluyendo las comillas.
- */
 int	quoted_token_size(const char *str, int *i)
 {
 	int		size;
@@ -39,11 +34,6 @@ int	quoted_token_size(const char *str, int *i)
 	return (size);
 }
 
-/*
- * Objetivo: Calcula el tamaño del siguiente token, respetando comillas internas
- * y tratando operadores como delimitadores.
- * Devuelve el tamaño del token.
- */
 int	token_size(const char *str)
 {
 	int		size;
@@ -70,44 +60,6 @@ int	token_size(const char *str)
 	return (size);
 }
 
-/*
- * Count tokens including operators as separate tokens
- */
-/*
-int	count_tokens(const char *str)
-{
-	int	count;
-	int	size;
-
-	count = 0;
-	while (*str)
-	{
-		while (*str && (*str == ' ' || *str == '\t' || *str == '\n'))
-			str++;
-		if (*str)
-		{
-			size = token_size(str);
-			if (size > 0)
-			{
-				count++;
-				str += size;
-			}
-			else
-				break ;
-		}
-	}
-	return (count);
-}
-*/
-
-/*
- * Objetivo: Divide una cadena en tokens respetando comillas, 
- * espacios y operadores.
- * - Inicializa el array de tokens.
- * - Omite espacios y maneja correctamente las comillas.
- * - Trata operadores como tokens separados.
- * - Devuelve un array de strings (tokens) o NULL en caso de error.
- */
 char	**init_token_array(const char *str, int *len)
 {
 	char	**s;
@@ -121,9 +73,6 @@ char	**init_token_array(const char *str, int *len)
 	return (s);
 }
 
-/*
- * Copia un token de longitud size desde src a dst.
- */
 void	copy_token(char *dst, const char *src, int size)
 {
 	int	k;

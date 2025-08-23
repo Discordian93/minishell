@@ -12,10 +12,6 @@
 
 #include "minishell.h"
 
-/*
-	 * Objetivo: Verifica si el token actual de pipe es inválido.
-	 * Retorna 1 si es inválido, 0 si es válido.
-*/
 int	es_pipe_invalida(char **tok, int i, int n)
 {
 	int	len;
@@ -30,10 +26,6 @@ int	es_pipe_invalida(char **tok, int i, int n)
 	return (0);
 }
 
-/*
-	 * Objetivo: Verifica si el token actual de redirección es inválido.
-	 * Retorna 1 si es inválido, 0 si es válido.
-*/
 int	es_redir_invalida(char **tok, int i, int n)
 {
 	int	len;

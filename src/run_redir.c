@@ -12,10 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Recorre una cadena de nodos REDIR y aplica cada redirección.
- * Si encuentra un error en la redirección, termina el proceso con error.
- */
 void	apply_redirs_chain(t_tree *node)
 {
 	t_redir	*r;
@@ -42,10 +38,6 @@ void	apply_redirs_chain(t_tree *node)
 	}
 }
 
-/*
- * Aplica únicamente las redirecciones encontradas en una cadena de nodos REDIR.
- * Ejecuta un proceso hijo para realizar las redirecciones
- */
 void	apply_redirs_only(t_tree *node)
 {
 	pid_t	pid;
@@ -75,10 +67,6 @@ void	apply_redirs_only(t_tree *node)
 	}
 }
 
-/*
- * Ejecuta un nodo de tipo REDIR, realizando la redirección de archivos
- * y luego ejecutando el comando hijo.
- */
 void	run_redir(t_tree *tree, t_data *data)
 {
 	t_redir	*redir;

@@ -32,10 +32,6 @@ int	decode_wait_status(int st)
 	return (0);
 }
 
-/**
- * Manejador de señales para el proceso padre (shell interactiva).
- * Maneja SIGINT (Ctrl+C) cuando el shell está esperando input.
- */
 void	sig_handler(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
@@ -50,10 +46,6 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 	}
 }
 
-/**
- * Inicializa el manejo de señales personalizado para la shell padre.
- * Se usa SA_SIGINFO para que el manejador reciba contexto adicional.
- */
 void	sig_init(void)
 {
 	struct sigaction	sa;
@@ -66,10 +58,6 @@ void	sig_init(void)
 	sigaction(SIGQUIT, &sa, NULL);
 }
 
-/**
- * Ignora temporalmente señales.
- * Útil en el padre mientras espera hijos (evita doble manejo).
- */
 void	sig_ignore(void)
 {
 	struct sigaction	sa;
@@ -81,10 +69,6 @@ void	sig_ignore(void)
 	sigaction(SIGQUIT, &sa, NULL);
 }
 
-/**
- * Restaura el comportamiento por defecto del sistema.
- * Útil en los procesos hijos, antes de ejecutar comandos externos.
- */
 void	sig_default(void)
 {
 	struct sigaction	sa;

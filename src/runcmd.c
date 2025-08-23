@@ -18,11 +18,6 @@ void	ft_panic(void)
 	exit(127);
 }
 
-/*
- * Ejecuta un comando externo en el proceso hijo.
- * Busca la ruta del comando, la copia a un buffer y llama a execve.
- * Si ocurre un error, muestra un mensaje y termina el proceso.
- */
 void	execute_external_command(t_exec *exec)
 {
 	char		*path;
@@ -37,11 +32,6 @@ void	execute_external_command(t_exec *exec)
 	ft_panic();
 }
 
-/*
- * Ejecuta el árbol de comandos recibido, 
- * manejando los diferentes tipos de nodos:
- * ejecución simple, redirección y pipes.
- */
 void	runcmd(t_tree *tree, t_data *data)
 {
 	if (!tree)

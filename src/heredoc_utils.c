@@ -12,20 +12,17 @@
 
 #include "minishell.h"
 
-// Crea un pipe y verifica errores
 void	init_heredoc_pipe(int pipefd[2])
 {
 	if (pipe(pipefd) == -1)
 		panic("pipe failed\n", EXIT_FAILURE);
 }
 
-// Verifica si una línea coincide con el delimitador
 int	is_delimiter(const char *line, const char *cmp_delim, size_t len)
 {
 	return (ft_strncmp(line, cmp_delim, len + 1) == 0);
 }
 
-// Maneja el cuerpo del bucle heredoc
 void	heredoc_loop(int write_fd, const char *cmp_delim, int quoted_delim)
 {
 	char	*line;

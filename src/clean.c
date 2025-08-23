@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-/**
- * Cuenta el número de elementos en un array de strings
- * @param str: array de strings terminado en NULL
- * @return: número de elementos
- */
 int	count_split(char **str)
 {
 	int	i;
@@ -29,7 +24,6 @@ int	count_split(char **str)
 	return (i);
 }
 
-// Libera la memoria ya asignada si ocurre un error en medio del proceso
 void	free_split(char ***s, int index)
 {
 	int	i;

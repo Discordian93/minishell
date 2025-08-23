@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-/* Allocates a new environment array with space for one more variable */
 static char	**alloc_new_env(char **env)
 {
 	size_t	count;
@@ -25,7 +24,6 @@ static char	**alloc_new_env(char **env)
 	return (new_env);
 }
 
-/* Copies all environment variables to new_env */
 static int	copy_env_vars(char **src, char **dst)
 {
 	size_t	i;
@@ -44,7 +42,6 @@ static int	copy_env_vars(char **src, char **dst)
 	return (1);
 }
 
-/* Adds a new variable to the environment */
 void	add_to_environ(char ***envdir, char *key, char *value)
 {
 	char	**env;

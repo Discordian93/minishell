@@ -12,14 +12,6 @@
 
 #include "minishell.h"
 
-/*
-	Objetivo: Lee líneas desde la entrada estándar hasta 
-	encontrar el delimitador especificado.
-	Si el delimitador está entre comillas, no expande variables. 
-	Si no, expande $VAR.
-	Escribe las líneas leídas en el extremo d
-	e escritura de un pipe y retorna el extremo de lectura.
-*/
 void	write_line_to_pipe(int fd, const char *line)
 {
 	size_t	len;
@@ -29,10 +21,6 @@ void	write_line_to_pipe(int fd, const char *line)
 	write(fd, "\n", 1);
 }
 
-/*
-	Objetivo: Procesa una línea de heredoc,
-	expandiéndola si es necesario y escribiéndola en el pipe.
-*/
 void	process_heredoc_line(int fd, char *line, int quoted_delim)
 {
 	char	*expanded;

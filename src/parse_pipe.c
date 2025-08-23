@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-// Crea un nodo PIPE con hijos izquierdo y derecho
 t_tree	*make_pipe_node(t_tree *left, t_tree *right)
 {
 	t_tree	*pipe_node;

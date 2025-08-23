@@ -38,12 +38,6 @@ void	draw_prompt(t_data *data)
 	data->input = input;
 }
 
-/*
- * Objetivo: Función principal del programa minishell.
- * Inicializa las estructuras necesarias, gestiona la señalización,
- * muestra el prompt, lee la entrada del usuario, 
- * la procesa y ejecuta los comandos.
-*/
 static void	run_if_status_ok(t_tree *tree, t_data *data, int previous_status)
 {
 	if (!(g_status == 130 && previous_status != 130))
@@ -78,11 +72,6 @@ void	handle_input(t_data *data)
 		ft_free(data);
 	}
 }
-
-/*
- * Objetivo: Punto de entrada del programa. Inicializa los datos,
- * configura las señales y llama a la función que maneja la entrada del usuario.
- */
 
 int	main(void)
 {

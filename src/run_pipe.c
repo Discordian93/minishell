@@ -12,15 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Ejecuta un nodo de tipo PIPE, creando un pipe y dos procesos hijos
- * para manejar la comunicación entre los comandos conectados por el pipe.
- * El proceso hijo izquierdo ejecuta el comando de la izquierda y redirige
- * su salida estándar al pipe.
- * El proceso hijo derecho ejecuta el comando de la derecha y redirige
- * su entrada estándar al pipe.
- * El padre espera a que ambos hijos terminen.
- */
 void	run_pipe_child_left(t_tree *tree, t_data *data, int fd[2])
 {
 	sig_default();
@@ -52,10 +43,6 @@ void	parent_process_pipe(pid_t pid_left, pid_t pid_right, int *st)
 	sig_init();
 }
 
-/*
- * Ejecuta un nodo de tipo PIPE, creando un pipe y dos procesos hijos
- * para manejar la comunicación entre los comandos.
- */
 void	run_pipe(t_tree *tree, t_data *data)
 {
 	int		fd[2];

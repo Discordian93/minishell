@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-/* Auxiliary function to set or unset environment variable */
 void	modify_environ(char *key, char *value, size_t op, char ***env)
 {
 	if (op == 2)
@@ -21,12 +20,6 @@ void	modify_environ(char *key, char *value, size_t op, char ***env)
 		my_unsetenv(key, env);
 }
 
-/*
-	op 1 is getenv
-	op 2 is setenv
-	op 3 is getting entire env
-	op 4 is unsetenv
-*/
 void	*handle_environ(char *key, char *value, size_t op)
 {
 	static size_t	initialized = 0;

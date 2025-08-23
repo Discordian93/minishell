@@ -19,10 +19,6 @@ int	ft_free_check(char **tok, int n)
 	return (0);
 }
 
-/*
-	 * Objetivo: Función principal para verificar la validez de los tokens.
-	 * Retorna 1 si los tokens son válidos, 0 en caso contrario.
- */
 int	is_pipe_token(char *token)
 {
 	return (ft_strncmp(token, "|", 1) == 0);

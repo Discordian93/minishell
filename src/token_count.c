@@ -12,10 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Helper: Check if current position is at an operator
- * Returns operator length (1 or 2), or 0 if not an operator
- */
 int	check_operator(const char *s, int i)
 {
 	if (!s[i])
@@ -29,10 +25,6 @@ int	check_operator(const char *s, int i)
 	return (0);
 }
 
-/*
- * Objetivo: Saltar todos los espacios, tabs y saltos de línea en la cadena.
- * Devuelve un puntero a la primera posición no espacio.
- */
 const char	*skip_spaces(const char *s)
 {
 	while (*s == ' ' || *s == '\t' || *s == '\n')
@@ -40,12 +32,6 @@ const char	*skip_spaces(const char *s)
 	return (s);
 }
 
-/*
- * Objetivo: Avanza el índice hasta encontrar la 
- * comilla de cierre o el final de la cadena.
- * Devuelve el nuevo índice después de la comilla 
- * de cierre o el final.
- */
 int	skip_quoted(const char *s, int i)
 {
 	char	quote;
@@ -59,12 +45,6 @@ int	skip_quoted(const char *s, int i)
 	return (i);
 }
 
-/*
- * Objetivo: Avanza el índice hasta el final de la palabra,
- * considerando comillas como agrupadores y operadores como separadores.
- * Si encuentra una comilla sin cerrar, devuelve -1 para indicar error; 
- * de lo contrario, devuelve el nuevo índice.
- */
 int	skip_word(const char *s, int i)
 {
 	char	quote;
@@ -91,11 +71,6 @@ int	skip_word(const char *s, int i)
 	return (i);
 }
 
-/*
- * Objetivo: Cuenta cuántas palabras hay en la cadena,
- * considerando comillas como agrupadores y operadores como tokens separados.
- * Si hay una comilla sin cerrar, devuelve -1 para evitar errores posteriores.
- */
 int	count_words(const char *s)
 {
 	int	words;

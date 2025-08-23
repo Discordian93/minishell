@@ -26,8 +26,6 @@ int	is_wrapped_in_quotes(const char *s)
 	return (0);
 }
 
-// Devuelve una copia del delimitador SIN las comillas externas si las tiene.
-// Si no estaban, devuelve un strdup(s) normal. (Siempre retorna memoria nueva.)
 char	*strip_wrapping_quotes(const char *s)
 {
 	size_t	len;
@@ -41,7 +39,6 @@ char	*strip_wrapping_quotes(const char *s)
 	return (ft_strdup(s));
 }
 
-// Agrega un carácter simple a la cadena destino
 void	append_char(char **res, char c)
 {
 	char	t[2];
@@ -51,7 +48,6 @@ void	append_char(char **res, char c)
 	append(res, t);
 }
 
-// Expansión ligera para heredoc: expande $VAR pero NO quita comillas
 char	*expand_heredoc_line(char *line)
 {
 	char	*res;

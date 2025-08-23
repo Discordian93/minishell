@@ -39,7 +39,6 @@ char	*my_getenv(char *key, char **env)
 	return (NULL);
 }
 
-/* Auxiliary function to find environment variable index */
 int	find_env_index(char *key, char **env)
 {
 	size_t	i;
@@ -65,7 +64,6 @@ int	find_env_index(char *key, char **env)
 	return (-1);
 }
 
-/* Auxiliary function to copy environment excluding one index */
 char	**copy_environ_except(char **env, size_t skip_index)
 {
 	size_t	i;
@@ -108,24 +106,3 @@ void	my_unsetenv(char *key, char ***env)
 	free_environ(*env);
 	*env = new_env;
 }
-
-/*void	*handle_environ(char *key, size_t op)
-{
-	static size_t	initialized = 0;
-	static char**	my_environ = NULL;
-	extern char**	environ;
-
-	if (initialized == 0)
-	{
-		my_environ = initialize_environ(environ);
-		if (!my_environ)
-			return (NULL);
-		initialized = 1;
-	}
-	if (op == 1)
-		return ((char *) my_getenv(key, my_environ));
-	else if (op == 3)
-		return ((char **) my_environ);
-	else
-		return (NULL);
-}*/

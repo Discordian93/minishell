@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Verifica si solo se deben aplicar redirecciones.
- * Retorna 1 si solo se deben aplicar redirecciones, 
- * 0 en caso contrario.
- */
 int	should_apply_redirs_only(t_exec *exec, t_tree *tree)
 {
 	if (!exec || !exec->argv[0])
@@ -27,10 +22,6 @@ int	should_apply_redirs_only(t_exec *exec, t_tree *tree)
 	return (0);
 }
 
-/*
- * Verifica si el comando es un builtin que debe ejecutarse en el padre.
- * Retorna 1 si es un builtin de padre, 0 en caso contrario.
- */
 int	should_execute_builtin_parent(t_exec *exec)
 {
 	if (is_builtin_parents(exec) && exec)
@@ -38,9 +29,6 @@ int	should_execute_builtin_parent(t_exec *exec)
 	return (0);
 }
 
-/*
- * Ejecuta el proceso hijo, configurando señales y ejecutando el comando.
- */
 void	child_process(t_tree *tree, t_data *data, t_exec *exec)
 {
 	sig_default();
@@ -51,9 +39,6 @@ void	child_process(t_tree *tree, t_data *data, t_exec *exec)
 		execute_external_command(exec);
 }
 
-/*
- * Maneja el proceso padre, esperando al hijo y actualizando el estado.
- */
 void	parent_process(pid_t pid, int *st)
 {
 	sig_ignore();
@@ -62,11 +47,6 @@ void	parent_process(pid_t pid, int *st)
 	sig_init();
 }
 
-/*
- * Objetivo: Ejecutar un nodo de tipo ejecución (t_exec) del árbol de comandos.
- * Esta función maneja la ejecución de comandos, incluyendo redirecciones,
- * ejecución de builtins en el padre o hijo, y comandos externos.
- */
 void	run_exec(t_tree *tree, t_data *data)
 {
 	t_exec	*exec;

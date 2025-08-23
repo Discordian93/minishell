@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-/**
- * @brief Expands an environment variable found at the token's position.
- * @param token Pointer to the current position in the input string,
- *  starting at '$'.
- * The pointer is advanced past the expanded variable.
- * @param result Pointer to the string where the expanded value will be appended.
- */
 void	expand_var(char **token, char **result)
 {
 	char	*varname;
@@ -131,36 +124,3 @@ char	*ft_strndup(char *str, size_t n)
 	dup[i] = '\0';
 	return (dup);
 }
-
-/*
-// Función de prueba para expand_vars
-int main(void)
-{
-    // Tokens simulados manualmente (como si fueran de ft_token)
-    char *tokens[] = {
-        "echo",
-        "$USER",
-        "'$HOME'",
-        "\"$HOME/Documents\"",
-        "Texto plano",
-        "q\"$SHELL path\"",
-        NULL
-    };
-
-    char **expanded = expand_vars(tokens);
-    if (!expanded)
-    {
-        fprintf(stderr, "Error: expand_vars falló\n");
-        return 1;
-    }
-
-    printf("\nTokens expandidos:\n");
-    for (int i = 0; expanded[i]; i++)
-    {
-        printf("[%d]: %s\n", i, expanded[i]);
-        free(expanded[i]);
-    }
-    free(expanded);
-    return 0;
-}
-*/

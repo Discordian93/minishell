@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-// Inicializa una estructura t_exec para almacenar los argumentos del comando.
 t_exec	*initialize_exec(void)
 {
 	t_exec	*exec;
@@ -30,7 +29,6 @@ t_exec	*initialize_exec(void)
 	return (exec);
 }
 
-// Construye el árbol de ejecución para un comando simple con redirecciones.
 t_tree	*build_exec_tree(t_exec *exec, char **token)
 {
 	t_tree	*root_exec;
@@ -53,8 +51,6 @@ t_tree	*build_exec_tree(t_exec *exec, char **token)
 	return (root_exec);
 }
 
-// Parsea comandos simples con múltiples redirecciones encadenadas
-// y construye un árbol de ejecución para el comando.
 t_tree	*parseexec_tree(char *input)
 {
 	char	**token;

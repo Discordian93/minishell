@@ -12,14 +12,6 @@
 
 #include "minishell.h"
 
-/**
- * Función auxiliar que busca la ruta absoluta del comando que se quiere ejecutar
- * Comportamiento similar a bash:
- * - Si cmd contiene '/', lo trata como ruta absoluta/relativa
- * - Si no, busca en cada directorio del PATH
- * @param cmd: nombre del comando a buscar
- * @return: ruta completa del ejecutable o NULL si no se encuentra
- */
 char	*join_path_cmd(const char *dir, const char *cmd)
 {
 	char	*temp;
@@ -33,18 +25,6 @@ char	*join_path_cmd(const char *dir, const char *cmd)
 	return (full_path);
 }
 
-/**
- * Verifica si la ruta dada del comando es directamente accesible y ejecutable.
- *
- * @param cmd La ruta del comando a verificar.
- * @return Una nueva cadena duplicada con la ruta del comando si es ejecutable,
- *         o NULL si la ruta no es accesible o no es ejecutable.
- *
- * Esta función utiliza la llamada al sistema access() 
- * para verificar si el archivo en la ruta
- * especificada existe y tiene permisos de ejecución. Si es así, retorna un duplicado de la ruta;
- * de lo contrario, retorna NULL.
- */
 char	*check_direct_path(const char *cmd)
 {
 	if (access(cmd, X_OK) == 0)
@@ -52,20 +32,6 @@ char	*check_direct_path(const char *cmd)
 	return (NULL);
 }
 
-/**
- * search_in_paths - Busca el ejecutable de un comando en una lista de rutas.
- *
- * Objetivo:
- *   Recorre cada directorio en el array 'paths', une el nombre del comando 'cmd'
- *   a cada ruta, y verifica si el archivo resultante existe y es ejecutable.
- *   Si encuentra el ejecutable, retorna la ruta completa; si no, retorna NULL.
- *
- * @param paths        Array de cadenas con los directorios del PATH.
- * @param total_paths  Número total de directorios en el array paths.
- * @param cmd          Nombre del comando a buscar.
- * @return             Ruta completa del ejecutable si se encuentra y es ejecutable,
- *                     o NULL si no se encuentra en ninguno de los directorios.
- */
 char	*search_in_paths(char **paths, int total_paths, const char *cmd)
 {
 	int		i;
@@ -86,19 +52,6 @@ char	*search_in_paths(char **paths, int total_paths, const char *cmd)
 	}
 	return (NULL);
 }
-
-/**
- * get_command_path - Busca la ruta absoluta de un comando.
- * Objetivo: Dado el nombre de un comando, retorna la ruta absoluta 
- * 				del ejecutable
- *           si existe y es ejecutable, buscando en el PATH si es necesario.
- *           Si el comando contiene '/', se trata como ruta absoluta/relativa.
- *           Si no, busca en cada directorio del PATH.
- *           La función está dividida en funciones auxiliares 
- * 			para mayor claridad.
- * @param cmd: nombre del comando a buscar
- * @return: ruta completa del ejecutable o NULL si no se encuentra
- */
 
 char	*get_command_path(const char *cmd)
 {
@@ -126,19 +79,3 @@ char	*get_command_path(const char *cmd)
 	free_split(&paths, total_paths);
 	return (result);
 }
-
-/*
-int main()
-{
-	char *cmd = get_command_path("echo");
-	if (cmd)
-	{
-		printf("%s\n", cmd);
-		free(cmd);
-	}
-		
-	else
-		printf("NULL\n");
-	
-	return (0);
-}*/

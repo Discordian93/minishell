@@ -32,7 +32,6 @@
 # define WRITE_END 1
 # define MODE_HEREDOC 0x8000
 
-// Estructura genérica de nodo del árbol
 typedef struct s_tree
 {
 	char			*label;
