@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 14:55:37 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/22 15:08:26 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:55:48 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,46 +48,4 @@ void	process_heredoc_line(int fd, char *line, int quoted_delim)
 		write_line_to_pipe(fd, expanded);
 		free(expanded);
 	}
-}
-
-// Función principal heredoc
-int	handle_heredoc(char *delim)
-{
-	int			pipefd[2];
-	pid_t		pid;
-	int			st;
-	char		*cmp_delim;
-	int			quoted_delim;
-
-	init_heredoc_pipe(pipefd);
-	pid = fork();
-	if (pid < 0)
-	{
-		panic("fork failed\n", EXIT_FAILURE);
-		return (-1);
-	}
-	if (pid == 0)
-	{
-		sig_default();
-		close(pipefd[READ_END]);
-		quoted_delim = is_wrapped_in_quotes(delim);
-		cmp_delim = strip_wrapping_quotes(delim);
-		if (!cmp_delim)
-			panic("malloc failed\n", EXIT_FAILURE);
-		heredoc_loop(pipefd[WRITE_END], cmp_delim, quoted_delim);
-		free(cmp_delim);
-		close(pipefd[WRITE_END]);
-		exit(EXIT_SUCCESS);
-	}
-	close(pipefd[WRITE_END]);
-	sig_ignore();
-	waitpid(pid, &st, 0);
-	sig_init();
-	g_status = decode_wait_status(st);
-	if (WIFSIGNALED(st) && WTERMSIG(st) == SIGINT)
-	{
-		close(pipefd[READ_END]);
-		return (-1);
-	}
-	return (pipefd[READ_END]);
 }

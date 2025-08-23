@@ -6,12 +6,18 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:15:56 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/19 23:09:13 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:33:37 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
+void	ft_panic()
+{
+	write(2,"commmand not fund\n", 19);
+	exit(127);
+}
 /*
  * Ejecuta un comando externo en el proceso hijo.
  * Busca la ruta del comando, la copia a un buffer y llama a execve.
@@ -24,11 +30,11 @@ void	execute_external_command(t_exec *exec)
 
 	path = get_command_path(exec->argv[0]);
 	if (!path)
-		panic("command not found\n", 127);
+		ft_panic();
 	ft_strlcpy(path_buf, path, sizeof(path_buf));
 	free(path);
 	execve(path_buf, exec->argv, env());
-	panic("execve failed\n", EXIT_FAILURE);
+	ft_panic();
 }
 
 /*

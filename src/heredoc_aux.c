@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 17:45:46 by yuliano           #+#    #+#             */
-/*   Updated: 2025/08/22 17:46:39 by yuliano          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:43:17 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*fd_to_string(int fd)
 }
 
 /* Handles heredoc redirection specifically */
-void process_heredoc_redir(t_redir **redir, char *delim, int fd)
+void	process_heredoc_redir(t_redir **redir, char *delim, int fd)
 {
 	int		heredoc_fd;
 	char	*fd_path;
