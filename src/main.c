@@ -45,7 +45,9 @@ void	draw_prompt(t_data *data)
  * la procesa y ejecuta los comandos.
 */
 void	handle_input(t_data *data)
-{
+{	
+	int	previous_status;
+
 	while (1)
 	{
 		draw_prompt(data);
@@ -61,11 +63,15 @@ void	handle_input(t_data *data)
 		}
 		if (*data->input)
 			add_history(data->input);
+		previous_status = g_status;
 		data->tree = parsepipe_tree(data->input);
 		if (!data->tree)
 			write(2, "token failed\n", 14);
 		else
-			runcmd(data->tree, data);
+		{
+			if (!(g_status == 130 && previous_status != 130))
+				runcmd(data->tree, data);
+		}
 		ft_free(data);
 	}
 }
